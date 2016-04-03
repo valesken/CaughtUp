@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import news.caughtup.caughtup.R;
+import news.caughtup.caughtup.model.User;
+import news.caughtup.caughtup.model.UserList;
 
 public class HomeActivity extends AppCompatActivity {
     private static FragmentManager fm;
@@ -35,6 +37,9 @@ public class HomeActivity extends AppCompatActivity {
                 executeTransaction(editProfileFragment, "edit_profile");
             }
         });
+
+        // FOR TESTING ONLY
+        //testPublicProfile();
     }
 
     @Override
@@ -72,6 +77,40 @@ public class HomeActivity extends AppCompatActivity {
                 .replace(R.id.home_main_container, fragment)
                 .addToBackStack(tag)
                 .commit();
+    }
+
+    private void testPublicProfile() {
+        //region setup Users
+        User user1 = new User("bjonesy");
+        user1.setProfileImageId(R.mipmap.profile_pic_1);
+        user1.setFullName("Bob Jones");
+        user1.setGender('M');
+        user1.setAge(28);
+        user1.setLocation("San Mateo, CA");
+        user1.setAboutMe("I'm kind of an awesome guy.");
+        UserList.addToUserList(user1);
+        User user2 = new User("whatagal");
+        user2.setProfileImageId(R.mipmap.profile_pic_2);
+        user2.setFullName("Sarah Doe");
+        user2.setGender('F');
+        user2.setAge(24);
+        user2.setLocation("Mountain View, CA");
+        user2.setAboutMe("Who am I? Who are you? Why are you asking so many questions?");
+        UserList.addToUserList(user2);
+        user1.addFollower(user2);
+        //endregion
+
+        PublicProfileFragment publicProfile = new PublicProfileFragment();
+        Bundle args = new Bundle();
+        args.putString("user", user1.getUserName());
+        publicProfile.setArguments(args);
+
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction()
+                .add(R.id.main_container, publicProfile)
+                .addToBackStack("publicProfile")
+                .commit();
+
     }
 
     public static void restorePreviousFragment() {

@@ -19,6 +19,7 @@ import java.util.List;
 
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.model.User;
+import news.caughtup.caughtup.model.UserList;
 
 public class PublicProfileFragment extends Fragment {
 
@@ -31,7 +32,8 @@ public class PublicProfileFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_public_profile, container, false);
         context = getActivity().getApplicationContext();
         Bundle args = getArguments();
-        user = (User) args.get("user");
+        user = UserList.getUser(args.getString("user"));
+
         List<User> followers = user != null ? user.getFollowers() : null;
         String followersMsg = String.format("You have %d followers", followers != null ? followers.size() : 0);
 
@@ -52,8 +54,8 @@ public class PublicProfileFragment extends Fragment {
         Drawable userProfileDrawable = getResources().getDrawable(user.getProfileImageId(), null);
         userProfilePic.setImageDrawable(userProfileDrawable);
         userName.setText(user.getUserName());
-        userGender.setText(user.getGender());
-        userAge.setText(user.getAge());
+        userGender.setText(Character.toString(user.getGender()));
+        userAge.setText(String.format("%d", user.getAge()));
         userFullName.setText(user.getFullName());
         userLocation.setText(user.getLocation());
         userAboutMe.setText(user.getAboutMe());
@@ -73,12 +75,12 @@ public class PublicProfileFragment extends Fragment {
                 )) {
                     Toast.makeText(context,
                             String.format("Now following %s!", user.getUserName()),
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                     userFollowButton.setText(getResources().getString(R.string.unfollow_button_text));
                 } else {
                     Toast.makeText(context,
                             String.format("Stopped following %s.", user.getUserName()),
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                     userFollowButton.setText(getResources().getString(R.string.follow_me_button_text));
                 }
             }
@@ -90,17 +92,21 @@ public class PublicProfileFragment extends Fragment {
 
     private void addFollower(User follower) {
         LinearLayout followerLayout = new LinearLayout(context);
+        followerLayout.setOrientation(LinearLayout.VERTICAL);
+
         ImageView profilePic = new ImageView(context);
         Drawable profilePicDrawable = getResources().getDrawable(follower.getProfileImageId(), null);
         profilePic.setImageDrawable(profilePicDrawable);
         followerLayout.addView(profilePic,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         TextView userName = new TextView(context);
         userName.setTextColor(Color.BLACK);
         userName.setText(follower.getUserName());
         followerLayout.addView(userName,
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
         followersGrid.addView(followerLayout,
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 }
