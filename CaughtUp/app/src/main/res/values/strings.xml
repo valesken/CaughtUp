@@ -9,4 +9,7 @@
     <string name="confirm_password">Confirm Password:</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
+	<string name="profile_picture_description">Public profile picture for user.</string>
+    <string name="follow_me_button_text">Follow Me!</string>
+    <string name="unfollow_button_text">Unfollow</string>
 </resources>
