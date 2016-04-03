@@ -1,6 +1,9 @@
 package news.caughtup.caughtup.ui.prime;
 
+<<<<<<< HEAD
 import android.app.Fragment;
+=======
+>>>>>>> c3948ca6e5dc5d97911401066dc13eb044d965ab
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -63,6 +66,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+<<<<<<< HEAD
     @Override
     public void onBackPressed() {
         if (fm.getBackStackEntryCount() > 1) {
@@ -79,6 +83,8 @@ public class HomeActivity extends AppCompatActivity {
                 .commit();
     }
 
+=======
+>>>>>>> c3948ca6e5dc5d97911401066dc13eb044d965ab
     private void testPublicProfile() {
         //region setup Users
         User user1 = new User("bjonesy");
@@ -113,7 +119,10 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+<<<<<<< HEAD
     public static void restorePreviousFragment() {
         fm.popBackStack();
     }
+=======
+>>>>>>> c3948ca6e5dc5d97911401066dc13eb044d965ab
 }
