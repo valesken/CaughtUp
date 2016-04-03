@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">CaughtUp</string>
+    <string name="toolbar_title">News Feed</string>
+    <string name="search_icon">Search</string>
+<<<<<<< HEAD
+    <string name="change_password">Change Password</string>
+    <string name="edit_photo">Edit Photo</string>
+    <string name="old_password">Old Password:</string>
+    <string name="new_password">New Password:</string>
+    <string name="confirm_password">Confirm Password:</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+	<string name="profile_picture_description">Public profile picture for user.</string>
+=======
+    <string name="profile_picture_description">Public profile picture for user.</string>
+>>>>>>> c3948ca6e5dc5d97911401066dc13eb044d965ab
+    <string name="follow_me_button_text">Follow Me!</string>
+    <string name="unfollow_button_text">Unfollow</string>
+</resources>
