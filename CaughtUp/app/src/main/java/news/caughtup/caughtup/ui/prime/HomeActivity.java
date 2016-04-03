@@ -21,10 +21,8 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         fm = getFragmentManager();
-        EditProfileFragment editProfileFragment = new EditProfileFragment();
-        executeTransaction(editProfileFragment, "home");
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.action_bar);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.home_action_bar);
         setSupportActionBar(myToolbar);
         myToolbar.setNavigationIcon(R.drawable.profile_icon);
         setSupportActionBar(myToolbar);
@@ -33,6 +31,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /* User selected to go to their profile page, create the edit profile fragment */
+                EditProfileFragment editProfileFragment = new EditProfileFragment();
+                executeTransaction(editProfileFragment, "edit_profile");
             }
         });
     }
@@ -58,10 +58,23 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (fm.getBackStackEntryCount() > 1) {
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public static void executeTransaction(Fragment fragment, String tag) {
         fm.beginTransaction()
-                .replace(R.id.main_container, fragment)
+                .replace(R.id.home_main_container, fragment)
                 .addToBackStack(tag)
                 .commit();
+    }
+
+    public static void restorePreviousFragment() {
+        fm.popBackStack();
     }
 }
