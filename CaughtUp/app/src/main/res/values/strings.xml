@@ -2,4 +2,6 @@
     <string name="app_name">CaughtUp</string>
     <string name="toolbar_title">News Feed</string>
     <string name="search_icon">Search</string>
+    <string name="change_password">Change Password</string>
+    <string name="edit_photo">Edit Photo</string>
 </resources>

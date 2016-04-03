@@ -1,5 +1,7 @@
 package news.caughtup.caughtup.ui.prime;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,11 +13,16 @@ import android.view.View;
 import news.caughtup.caughtup.R;
 
 public class HomeActivity extends AppCompatActivity {
+    private static FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        fm = getFragmentManager();
+        EditProfileFragment editProfileFragment = new EditProfileFragment();
+        executeTransaction(editProfileFragment, "home");
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(myToolbar);
@@ -49,5 +56,12 @@ public class HomeActivity extends AppCompatActivity {
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public static void executeTransaction(Fragment fragment, String tag) {
+        fm.beginTransaction()
+                .replace(R.id.main_container, fragment)
+                .addToBackStack(tag)
+                .commit();
     }
 }
