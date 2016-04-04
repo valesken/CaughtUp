@@ -20,4 +20,6 @@
     <string name="test_bbc_url">http://www.bbc.com/news/world-us-canada-35964791</string>
     <string name="test_bbc_title">Princeton rebuffs calls to rename Woodrow Wilson school</string>
     <string name="test_bbc_description">Princeton University has rebuffed calls to remove Woodrow Wilson\'s name from its public policy school.</string>
+    <string name="follow_tag">follow</string>
+    <string name="unfollow_tag">unfollow</string>
 </resources>
