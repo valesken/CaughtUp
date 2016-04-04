@@ -107,7 +107,7 @@ public class HomeActivity extends AppCompatActivity {
 
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction()
-                .add(R.id.main_container, publicProfile)
+                .add(R.id.home_main_container, publicProfile)
                 .addToBackStack("publicProfile")
                 .commit();
 
