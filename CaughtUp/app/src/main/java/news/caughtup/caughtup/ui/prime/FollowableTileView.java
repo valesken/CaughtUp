@@ -8,29 +8,29 @@ import android.widget.TextView;
 
 import news.caughtup.caughtup.R;
 
-public class NewsSourceTileView extends RelativeLayout {
+public class FollowableTileView extends RelativeLayout {
 
     private ImageView thumbnail;
     private TextView name;
     private TextView description;
 
-    public NewsSourceTileView(Context context) {
+    public FollowableTileView(Context context) {
         super(context);
         init();
     }
 
-    public NewsSourceTileView(Context context, AttributeSet attrs) {
+    public FollowableTileView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public NewsSourceTileView(Context context, AttributeSet attrs, int defStyle) {
+    public FollowableTileView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
 
     private void init() {
-        inflate(getContext(), R.layout.news_source_tile_view, this);
+        inflate(getContext(), R.layout.followable_tile_view, this);
         this.thumbnail = (ImageView)findViewById(R.id.thumbnail_news_source_tile_view);
         this.name = (TextView)findViewById(R.id.name_news_source_tile_view);
         this.description = (TextView)findViewById(R.id.description_news_source_tile_view);
