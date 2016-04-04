@@ -38,6 +38,7 @@ public class SearchFragment extends Fragment{
         LinearLayout searchLayout = (LinearLayout) rootView.findViewById(R.id.search_layout);
         addAllUsers(searchLayout);
         addTestArticles(searchLayout);
+        addTestNewsSources(searchLayout);
         return rootView;
     }
 
@@ -227,5 +228,58 @@ public class SearchFragment extends Fragment{
             }
         });
         builder.show();
+    }
+
+    private void addTestNewsSources(LinearLayout layout) {
+        // Techcrunch
+        String techcrunchName = "Techcrunch";
+        String techcrunchDescription = "TechCrunch is an online publisher of technology industry news.";
+        Uri techcrunchUri = Uri.parse("http://techcrunch.com/");
+        // BBC
+        String bbcName = "BBC";
+        String bbcDescription = "The British Broadcasting Corporation (BBC) is the public service broadcaster of the United Kingdom, headquartered at Broadcasting House in London.";
+        Uri bbcUri = Uri.parse("http://www.bbc.com/");
+        // Load news sources
+        loadNewsSource(R.mipmap.techcrunch_icon, techcrunchUri, techcrunchName, techcrunchDescription, layout);
+        loadNewsSource(R.mipmap.bbc_icon, bbcUri, bbcName, bbcDescription, layout);
+    }
+
+    private void loadNewsSource(int thumbnailId, final Uri externalLink, final String name, String description, LinearLayout layout) {
+        NewsSourceTileView newsSource = new NewsSourceTileView(context);
+        newsSource.setThumbnailImage(thumbnailId);
+        newsSource.setNameText(name);
+        newsSource.setDescriptionText(description);
+        if(externalLink != null) {
+            newsSource.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, externalLink);
+                    getActivity().startActivity(launchBrowser);
+                    return false;
+                }
+            });
+        }
+        final ImageButton followButton = (ImageButton) newsSource.findViewById(R.id.follow_news_source_tile_view);
+        followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String followTag = getResources().getString(R.string.follow_tag);
+                String unfollowTag = getResources().getString(R.string.unfollow_tag);
+                if (followButton.getTag().equals(followTag)) {
+                    Toast.makeText(context,
+                            String.format("Now following %s!", name),
+                            Toast.LENGTH_SHORT).show();
+                    followButton.setImageDrawable(getResources().getDrawable(R.drawable.unfollow_icon, null));
+                    followButton.setTag(unfollowTag);
+                } else {
+                    Toast.makeText(context,
+                            String.format("No longer following %s.", name),
+                            Toast.LENGTH_SHORT).show();
+                    followButton.setImageDrawable(getResources().getDrawable(R.drawable.add_icon, null));
+                    followButton.setTag(followTag);
+                }
+            }
+        });
+        layout.addView(newsSource);
     }
 }
