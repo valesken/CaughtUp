@@ -39,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // FOR TESTING ONLY
-        //testPublicProfile();
+        setUpTestUsers();
     }
 
     @Override
