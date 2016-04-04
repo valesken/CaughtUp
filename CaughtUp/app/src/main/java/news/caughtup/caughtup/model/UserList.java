@@ -1,6 +1,8 @@
 package news.caughtup.caughtup.model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class UserList {
@@ -12,5 +14,9 @@ public class UserList {
 
     public static User getUser(String userName) {
         return userMap.get(userName);
+    }
+
+    public static List<User> getUsers() {
+        return new LinkedList<>(userMap.values());
     }
 }
