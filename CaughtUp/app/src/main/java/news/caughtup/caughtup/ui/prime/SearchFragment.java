@@ -1,12 +1,15 @@
 package news.caughtup.caughtup.ui.prime;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +37,7 @@ public class SearchFragment extends Fragment{
         context = getActivity().getApplicationContext();
         LinearLayout searchLayout = (LinearLayout) rootView.findViewById(R.id.search_layout);
         addAllUsers(searchLayout);
+        addTestArticles(searchLayout);
         return rootView;
     }
 
@@ -146,5 +150,82 @@ public class SearchFragment extends Fragment{
         args.putString("user", user.getUserName());
         publicProfile.setArguments(args);
         HomeActivity.executeTransaction(publicProfile, user.getUserName());
+    }
+
+    private void addTestArticles(LinearLayout layout) {
+        // Techcrunch article
+        Uri techcrunchUri = Uri.parse(getResources().getString(R.string.test_techcrunch_url));
+        String techcrunchTitle = getResources().getString(R.string.test_techcrunch_title);
+        String techcrunchDescription = getResources().getString(R.string.test_techcrunch_description);
+        // BBC article
+        Uri bbcUri = Uri.parse(getResources().getString(R.string.test_bbc_url));
+        String bbcTitle = getResources().getString(R.string.test_bbc_title);
+        String bbcDescription = getResources().getString(R.string.test_bbc_description);
+        // Load Articles
+        loadArticle(R.mipmap.techcrunch_icon, techcrunchUri, techcrunchTitle, techcrunchDescription, layout);
+        loadArticle(R.mipmap.bbc_icon, bbcUri, bbcTitle, bbcDescription, layout);
+    }
+
+    private void loadArticle(int thumbnailId, final Uri externalLink, final String name, String description, LinearLayout layout) {
+        ArticleTileView article = new ArticleTileView(context);
+        article.setThumbnailImage(thumbnailId);
+        article.setNameText(name);
+        article.setDescriptionText(description);
+        if(externalLink != null) {
+            article.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, externalLink);
+                    getActivity().startActivity(launchBrowser);
+                    return false;
+                }
+            });
+        }
+        ImageButton shareButton = (ImageButton) article.findViewById(R.id.share_article_tile_view);
+        if(shareButton != null) {
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchShareDialog(name);
+                }
+            });
+        }
+        layout.addView(article);
+    }
+
+    private void launchShareDialog(final String articleName) {
+        final String[] items = { "Share with Followers", "Share on Facebook", "Share on Twitter", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Share Article!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                switch (items[item]) {
+                    case "Share with Followers":
+                        Toast.makeText(context,
+                                String.format("\"%s\" is now shared with your followers", articleName),
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                    case "Share on Facebook":
+                        Toast.makeText(context,
+                                String.format("\"%s\" is now shared on Facebook", articleName),
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                    case "Share on Twitter":
+                        Toast.makeText(context,
+                                String.format("\"%s\" is now shared on Twitter", articleName),
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                    case "Cancel":
+                    default:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 }
