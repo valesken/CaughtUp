@@ -9,8 +9,17 @@
     <string name="confirm_password">Confirm Password:</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
-	<string name="profile_picture_description">Public profile picture for user.</string>
+    <string name="profile_picture_description">Public profile picture for user.</string>
     <string name="follow_me_button_text">Follow Me!</string>
     <string name="unfollow_button_text">Unfollow</string>
-    <string name="edit_photo_text">Edit Photo</string>
+    <string name="share_article_tile_view_description">Share article</string>
+    <string name="thumbnail_article_tile_view_description">Article thumbnail</string>
+    <string name="test_techcrunch_url">http://techcrunch.com/2016/04/04/saleforce-acquires-metamind/</string>
+    <string name="test_techcrunch_title">Salesforce Acquires MetaMind</string>
+    <string name="test_techcrunch_description">MetaMind, a Palo Alto-based AI startup founded in July 2014, is being acquired by Salesforce.</string>
+    <string name="test_bbc_url">http://www.bbc.com/news/world-us-canada-35964791</string>
+    <string name="test_bbc_title">Princeton rebuffs calls to rename Woodrow Wilson school</string>
+    <string name="test_bbc_description">Princeton University has rebuffed calls to remove Woodrow Wilson\'s name from its public policy school.</string>
+    <string name="follow_tag">follow</string>
+    <string name="unfollow_tag">unfollow</string>
 </resources>
