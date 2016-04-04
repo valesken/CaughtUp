@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_centerHorizontal="true"
-            android:background="#D3D3D3"
+            android:background="#7FD3D3D3"
             android:gravity="center_vertical"
             android:layout_alignBottom="@+id/edit_profile_photo_image_view">
 
