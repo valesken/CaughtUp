@@ -22,4 +22,5 @@
     <string name="test_bbc_description">Princeton University has rebuffed calls to remove Woodrow Wilson\'s name from its public policy school.</string>
     <string name="follow_tag">follow</string>
     <string name="unfollow_tag">unfollow</string>
+    <string name="edit_photo_text">Edit Photo</string>
 </resources>
