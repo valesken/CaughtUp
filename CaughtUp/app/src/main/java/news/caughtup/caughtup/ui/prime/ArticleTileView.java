@@ -45,10 +45,12 @@ public class ArticleTileView extends RelativeLayout {
     }
 
     public void setNameText(String nameText) {
-        name.setText(nameText);
+        String visibleText = (nameText.length() > 40) ? nameText.substring(0, 37) + "..." : nameText;
+        name.setText(visibleText);
     }
 
     public void setDescriptionText(String descriptionText) {
-        description.setText(descriptionText);
+        String visibleText = (descriptionText.length() > 80) ? descriptionText.substring(0, 77) + "..." : descriptionText;
+        description.setText(visibleText);
     }
 }
