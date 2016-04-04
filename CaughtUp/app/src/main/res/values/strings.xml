@@ -12,4 +12,5 @@
 	<string name="profile_picture_description">Public profile picture for user.</string>
     <string name="follow_me_button_text">Follow Me!</string>
     <string name="unfollow_button_text">Unfollow</string>
+    <string name="edit_photo_text">Edit Photo</string>
 </resources>
