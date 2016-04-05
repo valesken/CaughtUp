@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inputs">
+        <EditText
+            android:id="@+id/login_fullname_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:textAlignment="center"
+            android:hint="Full Name (e.g. John Doe)" />
+        <EditText
+            android:id="@+id/login_email_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/login_fullname_edit_text"
+            android:textAlignment="center"
+            android:hint="Email (e.g. johndoe@me.com)" />
+        <EditText
+            android:id="@+id/login_username_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/login_email_edit_text"
+            android:textAlignment="center"
+            android:hint="Username (e.g. johndoe)" />
+        <EditText
+            android:id="@+id/login_password_edit_text"
+            android:inputType="textPassword"
+            android:layout_below="@+id/login_username_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"
+            android:hint="Password (hidden)" />
+        <EditText
+            android:id="@+id/login_confirm_password_edit_text"
+            android:inputType="textPassword"
+            android:layout_below="@+id/login_password_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"
+            android:hint="Confirm Password (hidden)" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/register_register_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/inputs"
+        android:backgroundTint="#fa932d"
+        android:text="Register"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>

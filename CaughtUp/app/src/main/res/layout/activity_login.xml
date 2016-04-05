@@ -9,9 +9,19 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ui.login.LoginActivity">
+    <TextView
+        android:id="@+id/login_title_text_view"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="CaughtUp"
+        android:textAlignment="center"
+        android:textSize="50dp" />
 
     <FrameLayout
         android:id="@+id/login_container"
+        android:layout_below="@+id/login_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"></FrameLayout>
 </RelativeLayout>
