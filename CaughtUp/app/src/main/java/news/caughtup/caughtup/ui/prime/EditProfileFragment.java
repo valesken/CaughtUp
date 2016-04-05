@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import news.caughtup.caughtup.R;
 
@@ -23,11 +25,12 @@ public class EditProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
-        Button editPhotoButton = (Button) view.findViewById(R.id.edit_profile_edit_photo_button);
-        editPhotoButton.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout editProfilePicture = (RelativeLayout) view.findViewById(R.id.edit_profile_picture_relative_layout);
+        editProfilePicture.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onTouch(View v, MotionEvent event) {
                 selectPhoto();
+                return false;
             }
         });
 

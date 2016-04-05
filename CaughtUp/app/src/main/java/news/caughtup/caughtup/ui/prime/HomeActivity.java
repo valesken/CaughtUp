@@ -39,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // FOR TESTING ONLY
-        //testPublicProfile();
+        setUpTestUsers();
     }
 
     @Override
@@ -54,6 +54,7 @@ public class HomeActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.search_icon:
                 // User chose the "Search" item, show the search fragment
+                executeTransaction(new SearchFragment(), "search");
                 return true;
 
             default:
@@ -79,8 +80,7 @@ public class HomeActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void testPublicProfile() {
-        //region setup Users
+    private void setUpTestUsers() {
         User user1 = new User("bjonesy");
         user1.setProfileImageId(R.mipmap.profile_pic_1);
         user1.setFullName("Bob Jones");
@@ -98,19 +98,6 @@ public class HomeActivity extends AppCompatActivity {
         user2.setAboutMe("Who am I? Who are you? Why are you asking so many questions?");
         UserList.addToUserList(user2);
         user1.addFollower(user2);
-        //endregion
-
-        PublicProfileFragment publicProfile = new PublicProfileFragment();
-        Bundle args = new Bundle();
-        args.putString("user", user1.getUserName());
-        publicProfile.setArguments(args);
-
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction()
-                .add(R.id.home_main_container, publicProfile)
-                .addToBackStack("publicProfile")
-                .commit();
-
     }
 
     public static void restorePreviousFragment() {
