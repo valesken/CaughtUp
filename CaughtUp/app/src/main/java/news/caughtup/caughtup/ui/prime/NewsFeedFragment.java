@@ -10,7 +10,7 @@ import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.model.Article;
 
 public class NewsFeedFragment extends ListFragment {
-    private ArrayList<Article> dataArray = new ArrayList<Article>();
+    private ArrayList<Article> dataArray = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

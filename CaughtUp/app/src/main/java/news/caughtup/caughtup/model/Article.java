@@ -15,6 +15,7 @@ public class Article {
         this.date = date;
         this.thumbnailID = thumbnailID;
         this.summary = summary;
+        this.articleURI = articleURI;
     }
 
     public String getTitle() {

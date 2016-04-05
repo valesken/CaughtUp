@@ -28,23 +28,19 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // if we weren't given a view, inflate one
-        if (null == convertView) {
-            convertView = this.activity.getLayoutInflater()
-                    .inflate(R.layout.article_tile_view, null);
+        if (convertView == null) {
+            convertView = this.activity.getLayoutInflater().inflate(R.layout.article_tile_view, null);
         }
 
         final Article article = getItem(position);
 
-        TextView titleTextView =
-                (TextView)convertView.findViewById(R.id.name_article_tile_view);
+        TextView titleTextView = (TextView)convertView.findViewById(R.id.name_article_tile_view);
         titleTextView.setText(article.getTitle());
 
-        TextView descriptionTextView =
-                (TextView)convertView.findViewById(R.id.description_article_tile_view);
+        TextView descriptionTextView = (TextView)convertView.findViewById(R.id.description_article_tile_view);
         descriptionTextView.setText(String.valueOf(article.getSummary()));
 
-        ImageView thumbnailImageView =
-                (ImageView) convertView.findViewById(R.id.thumbnail_article_tile_view);
+        ImageView thumbnailImageView = (ImageView) convertView.findViewById(R.id.thumbnail_article_tile_view);
         thumbnailImageView.setImageDrawable(activity.getResources().getDrawable(article.getThumbnailID(), null));
 
         convertView.setOnTouchListener(new View.OnTouchListener() {
