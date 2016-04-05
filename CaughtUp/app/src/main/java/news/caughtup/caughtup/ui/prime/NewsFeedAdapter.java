@@ -1,13 +1,17 @@
 package news.caughtup.caughtup.ui.prime;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -51,6 +55,52 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
                 return false;
             }
         });
+
+        ImageButton shareButton = (ImageButton) convertView.findViewById(R.id.share_article_tile_view);
+        if(shareButton != null) {
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchShareDialog(article.getTitle());
+                }
+            });
+        }
         return convertView;
+    }
+
+    private void launchShareDialog(final String articleName) {
+        final String[] items = { "Share with Followers", "Share on Facebook", "Share on Twitter", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Share Article!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                switch (items[item]) {
+                    case "Share with Followers":
+                        Toast.makeText(activity,
+                                String.format("\"%s\" is now shared with your followers", articleName),
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                    case "Share on Facebook":
+                        Toast.makeText(activity,
+                                String.format("\"%s\" is now shared on Facebook", articleName),
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                    case "Share on Twitter":
+                        Toast.makeText(activity,
+                                String.format("\"%s\" is now shared on Twitter", articleName),
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                    case "Cancel":
+                    default:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 }
