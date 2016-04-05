@@ -23,6 +23,8 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         fm = getFragmentManager();
+        NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
+        executeTransaction(newsFeedFragment, "newsfeed");
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.home_action_bar);
         setSupportActionBar(myToolbar);
