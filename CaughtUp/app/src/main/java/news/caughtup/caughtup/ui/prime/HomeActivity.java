@@ -15,6 +15,7 @@ import news.caughtup.caughtup.model.User;
 import news.caughtup.caughtup.model.UserList;
 
 public class HomeActivity extends AppCompatActivity {
+
     private static FragmentManager fm;
 
     @Override

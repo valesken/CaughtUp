@@ -17,13 +17,17 @@ import java.util.ArrayList;
 
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.model.Article;
+import news.caughtup.caughtup.ws.remote.FacebookAccessManager;
+import news.caughtup.caughtup.ws.remote.IFacebookAccessManager;
 
 public class NewsFeedAdapter extends ArrayAdapter<Article> {
-    Activity activity;
+
+    private Activity activity;
     public NewsFeedAdapter(ArrayList<Article> dataArray, Activity activity) {
         super(activity, android.R.layout.simple_list_item_1, dataArray);
         this.activity = activity;
     }
+    private Article article;
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -32,7 +36,7 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
             convertView = this.activity.getLayoutInflater().inflate(R.layout.article_tile_view, null);
         }
 
-        final Article article = getItem(position);
+        article = getItem(position);
 
         TextView titleTextView = (TextView)convertView.findViewById(R.id.name_article_tile_view);
         titleTextView.setText(article.getTitle());
@@ -79,8 +83,12 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
                         dialog.dismiss();
                         break;
                     case "Share on Facebook":
+                        String message = String.format("\"%s\" is now shared on Facebook", articleName);
+                        IFacebookAccessManager fbAccessManager = new FacebookAccessManager();
+                        fbAccessManager.authenticate();
+                        fbAccessManager.share(message, article);
                         Toast.makeText(activity,
-                                String.format("\"%s\" is now shared on Facebook", articleName),
+                                message,
                                 Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;
