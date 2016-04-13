@@ -16,8 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import news.caughtup.caughtup.R;
-import news.caughtup.caughtup.model.User;
-import news.caughtup.caughtup.model.UserList;
+import news.caughtup.caughtup.entities.Article;
+import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.entities.UserList;
+import news.caughtup.caughtup.ws.remote.FacebookManager;
+import news.caughtup.caughtup.ws.remote.ISocialMediaManager;
 
 public class SearchFragment extends Fragment{
 
@@ -67,45 +70,48 @@ public class SearchFragment extends Fragment{
     private void addTestArticles(LinearLayout layout) {
         // Techcrunch article
         Uri techcrunchUri = Uri.parse(getResources().getString(R.string.test_techcrunch_url));
+        String techcrunchDate = getResources().getString(R.string.test_techcrunch_date);
         String techcrunchTitle = getResources().getString(R.string.test_techcrunch_title);
         String techcrunchDescription = getResources().getString(R.string.test_techcrunch_description);
+        Article techcrunchArticle = new Article(techcrunchTitle, techcrunchDate, R.mipmap.techcrunch_icon,
+                techcrunchDescription, techcrunchUri);
         // BBC article
         Uri bbcUri = Uri.parse(getResources().getString(R.string.test_bbc_url));
+        String bbcDate = getResources().getString(R.string.test_bbc_date);
         String bbcTitle = getResources().getString(R.string.test_bbc_title);
         String bbcDescription = getResources().getString(R.string.test_bbc_description);
+        Article bbcArticle = new Article(bbcTitle, bbcDate, R.mipmap.bbc_icon, bbcDescription, bbcUri);
         // Load Articles
-        loadArticle(R.mipmap.techcrunch_icon, techcrunchUri, techcrunchTitle, techcrunchDescription, layout);
-        loadArticle(R.mipmap.bbc_icon, bbcUri, bbcTitle, bbcDescription, layout);
+        loadArticle(techcrunchArticle, layout);
+        loadArticle(bbcArticle, layout);
     }
 
-    private void loadArticle(int thumbnailId, final Uri externalLink, final String name, String description, LinearLayout layout) {
-        ArticleTileView article = new ArticleTileView(context);
-        article.setThumbnailImage(thumbnailId);
-        article.setNameText(name);
-        article.setDescriptionText(description);
-        if(externalLink != null) {
-            article.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, externalLink);
-                    getActivity().startActivity(launchBrowser);
-                    return false;
-                }
-            });
-        }
-        ImageButton shareButton = (ImageButton) article.findViewById(R.id.share_article_tile_view);
+    private void loadArticle(final Article article, LinearLayout layout) {
+        ArticleTileView articleTileView = new ArticleTileView(context);
+        articleTileView.setThumbnailImage(article.getThumbnailID());
+        articleTileView.setNameText(article.getTitle());
+        articleTileView.setDescriptionText(article.getSummary());
+        articleTileView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, article.getArticleURI());
+                getActivity().startActivity(launchBrowser);
+                return false;
+            }
+        });
+        ImageButton shareButton = (ImageButton) articleTileView.findViewById(R.id.share_article_tile_view);
         if(shareButton != null) {
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    launchShareDialog(name);
+                    launchShareDialog(article);
                 }
             });
         }
-        layout.addView(article);
+        layout.addView(articleTileView);
     }
 
-    private void launchShareDialog(final String articleName) {
+    private void launchShareDialog(final Article article) {
         final String[] items = { "Share with Followers", "Share on Facebook", "Share on Twitter", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Share Article!");
@@ -115,19 +121,23 @@ public class SearchFragment extends Fragment{
                 switch (items[item]) {
                     case "Share with Followers":
                         Toast.makeText(context,
-                                String.format("\"%s\" is now shared with your followers", articleName),
+                                String.format("\"%s\" is now shared with your followers", article.getTitle()),
                                 Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;
                     case "Share on Facebook":
+                        String message = String.format("\"%s\" is now shared on Facebook", article.getTitle());
+                        ISocialMediaManager fbAccessManager = new FacebookManager();
+                        fbAccessManager.authenticate();
+                        fbAccessManager.share(message, article);
                         Toast.makeText(context,
-                                String.format("\"%s\" is now shared on Facebook", articleName),
+                                message,
                                 Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;
                     case "Share on Twitter":
                         Toast.makeText(context,
-                                String.format("\"%s\" is now shared on Twitter", articleName),
+                                String.format("\"%s\" is now shared on Twitter", article.getTitle()),
                                 Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;

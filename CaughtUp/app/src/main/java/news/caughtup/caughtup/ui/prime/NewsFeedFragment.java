@@ -7,7 +7,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 
 import news.caughtup.caughtup.R;
-import news.caughtup.caughtup.model.Article;
+import news.caughtup.caughtup.entities.Article;
 
 public class NewsFeedFragment extends ListFragment {
     private ArrayList<Article> dataArray = new ArrayList<>();

@@ -18,8 +18,8 @@ import android.widget.Toast;
 import java.util.List;
 
 import news.caughtup.caughtup.R;
-import news.caughtup.caughtup.model.User;
-import news.caughtup.caughtup.model.UserList;
+import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.entities.UserList;
 
 public class PublicProfileFragment extends Fragment {
 

@@ -11,10 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import news.caughtup.caughtup.R;
-import news.caughtup.caughtup.model.User;
-import news.caughtup.caughtup.model.UserList;
+import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.entities.UserList;
 
 public class HomeActivity extends AppCompatActivity {
+
     private static FragmentManager fm;
 
     @Override

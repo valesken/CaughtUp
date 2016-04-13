@@ -1,4 +1,4 @@
-package news.caughtup.caughtup.model;
+package news.caughtup.caughtup.entities;
 
 import java.util.LinkedList;
 import java.util.List;
