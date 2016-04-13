@@ -1,8 +1,8 @@
 package news.caughtup.caughtup.ws.remote;
 
-import news.caughtup.caughtup.model.Article;
+import news.caughtup.caughtup.entities.Article;
 
-public class FacebookAccessManager implements IFacebookAccessManager {
+public class FacebookManager implements ISocialMediaManager {
 
     @Override
     public void authenticate() {

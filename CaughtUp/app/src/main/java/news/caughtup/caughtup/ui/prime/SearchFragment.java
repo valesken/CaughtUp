@@ -16,11 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import news.caughtup.caughtup.R;
-import news.caughtup.caughtup.model.Article;
-import news.caughtup.caughtup.model.User;
-import news.caughtup.caughtup.model.UserList;
-import news.caughtup.caughtup.ws.remote.FacebookAccessManager;
-import news.caughtup.caughtup.ws.remote.IFacebookAccessManager;
+import news.caughtup.caughtup.entities.Article;
+import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.entities.UserList;
+import news.caughtup.caughtup.ws.remote.FacebookManager;
+import news.caughtup.caughtup.ws.remote.ISocialMediaManager;
 
 public class SearchFragment extends Fragment{
 
@@ -127,7 +127,7 @@ public class SearchFragment extends Fragment{
                         break;
                     case "Share on Facebook":
                         String message = String.format("\"%s\" is now shared on Facebook", article.getTitle());
-                        IFacebookAccessManager fbAccessManager = new FacebookAccessManager();
+                        ISocialMediaManager fbAccessManager = new FacebookManager();
                         fbAccessManager.authenticate();
                         fbAccessManager.share(message, article);
                         Toast.makeText(context,
