@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.ui.prime.HomeActivity;
 
