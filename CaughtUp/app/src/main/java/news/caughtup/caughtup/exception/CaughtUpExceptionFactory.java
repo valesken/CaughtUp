@@ -1,11 +1,11 @@
 package news.caughtup.caughtup.exception;
 
-public abstract class CaughtUpExceptionFactory extends Exception implements ICaughtUpClientException {
+public class CaughtUpExceptionFactory {
     public enum ExceptionType {
         EditProfile, NewsFeed, Search
     }
 
-    public CaughtUpExceptionFactory createException(ExceptionType type) {
+    public ICaughtUpClientException getException(ExceptionType type) {
         switch (type) {
             case EditProfile:
                 return new EditProfileException();

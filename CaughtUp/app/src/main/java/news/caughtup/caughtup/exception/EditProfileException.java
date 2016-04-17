@@ -1,6 +1,6 @@
 package news.caughtup.caughtup.exception;
 
-public class EditProfileException extends CaughtUpExceptionFactory {
+public class EditProfileException implements ICaughtUpClientException {
     @Override
     public void fix(int exceptionID) {
 

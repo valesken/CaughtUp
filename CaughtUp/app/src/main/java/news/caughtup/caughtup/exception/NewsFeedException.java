@@ -1,6 +1,6 @@
 package news.caughtup.caughtup.exception;
 
-public class NewsFeedException extends CaughtUpExceptionFactory {
+public class NewsFeedException implements ICaughtUpClientException {
 
     @Override
     public void fix(int exceptionID) {
