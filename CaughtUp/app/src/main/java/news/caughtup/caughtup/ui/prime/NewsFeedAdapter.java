@@ -19,6 +19,7 @@ import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.Article;
 import news.caughtup.caughtup.ws.remote.FacebookManager;
 import news.caughtup.caughtup.ws.remote.ISocialMediaManager;
+import news.caughtup.caughtup.ws.remote.TwitterManager;
 
 public class NewsFeedAdapter extends ArrayAdapter<Article> {
 
@@ -93,8 +94,12 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
                         dialog.dismiss();
                         break;
                     case "Share on Twitter":
-                        Toast.makeText(activity,
-                                String.format("\"%s\" is now shared on Twitter", articleName),
+                        String tweet = String.format("Checkout \"%s\"!", article.getTitle());
+                        ISocialMediaManager twitterAccessManager = new TwitterManager();
+                        twitterAccessManager.authenticate();
+                        twitterAccessManager.share(tweet, article, activity);
+                        Toast.makeText(activity.getApplicationContext(),
+                                tweet,
                                 Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;

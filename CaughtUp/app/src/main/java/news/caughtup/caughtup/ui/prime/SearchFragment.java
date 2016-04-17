@@ -21,6 +21,7 @@ import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.UserList;
 import news.caughtup.caughtup.ws.remote.FacebookManager;
 import news.caughtup.caughtup.ws.remote.ISocialMediaManager;
+import news.caughtup.caughtup.ws.remote.TwitterManager;
 
 public class SearchFragment extends Fragment{
 
@@ -136,8 +137,12 @@ public class SearchFragment extends Fragment{
                         dialog.dismiss();
                         break;
                     case "Share on Twitter":
+                        String tweet = String.format("Checkout \"%s\"!", article.getTitle());
+                        ISocialMediaManager twitterAccessManager = new TwitterManager();
+                        twitterAccessManager.authenticate();
+                        twitterAccessManager.share(tweet, article, getActivity());
                         Toast.makeText(context,
-                                String.format("\"%s\" is now shared on Twitter", article.getTitle()),
+                                tweet,
                                 Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;

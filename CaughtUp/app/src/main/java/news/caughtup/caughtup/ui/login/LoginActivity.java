@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.crashlytics.android.Crashlytics;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
@@ -24,12 +25,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-        Fabric.with(this, new Twitter(authConfig), new TweetComposer());
+        Fabric.with(this, new Twitter(authConfig), new TweetComposer(), new Crashlytics());
         setContentView(R.layout.activity_login);
-
-        TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                .text("just setting up my Fabric.");
-        builder.show();
 
         fm = getFragmentManager();
 
