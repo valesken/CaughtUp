@@ -129,7 +129,7 @@ public class SearchFragment extends Fragment{
                         String message = String.format("\"%s\" is now shared on Facebook", article.getTitle());
                         ISocialMediaManager fbAccessManager = new FacebookManager();
                         fbAccessManager.authenticate();
-                        fbAccessManager.share(message, article);
+                        fbAccessManager.share(message, article, getActivity());
                         Toast.makeText(context,
                                 message,
                                 Toast.LENGTH_SHORT).show();
