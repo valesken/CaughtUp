@@ -86,7 +86,7 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
                         String message = String.format("\"%s\" is now shared on Facebook", articleName);
                         ISocialMediaManager fbAccessManager = new FacebookManager();
                         fbAccessManager.authenticate();
-                        fbAccessManager.share(message, article);
+                        fbAccessManager.share(message, article, activity);
                         Toast.makeText(activity,
                                 message,
                                 Toast.LENGTH_SHORT).show();
