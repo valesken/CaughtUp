@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.twitter.sdk.android.Twitter;
@@ -35,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
         TwitterAuthConfig authConfig = new TwitterAuthConfig(getResources().getString(R.string.twitter_api_key),
                 getResources().getString(R.string.twitter_api_secret));
-        Fabric.with(this, new Twitter(authConfig), new TweetComposer(), new Crashlytics());
+        Fabric.with(this, new Twitter(authConfig), new TweetComposer());
 
         fm = getFragmentManager();
         NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
