@@ -130,18 +130,12 @@ public class SearchFragment extends Fragment{
                         String message = String.format("\"%s\" is now shared on Facebook", article.getTitle());
                         ISocialMediaManager fbAccessManager = new FacebookManager();
                         fbAccessManager.share(message, article, getActivity());
-                        Toast.makeText(context,
-                                message,
-                                Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;
                     case "Share on Twitter":
                         String tweet = String.format("Checkout \"%s\"!", article.getTitle());
                         ISocialMediaManager twitterAccessManager = new TwitterManager();
                         twitterAccessManager.share(tweet, article, getActivity());
-                        Toast.makeText(context,
-                                tweet,
-                                Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;
                     case "Cancel":
