@@ -1,5 +1,8 @@
 package news.caughtup.caughtup.ws.remote;
 
+import news.caughtup.caughtup.entities.Callback;
+import news.caughtup.caughtup.entities.ResponseObject;
+
 public class RestProxy implements IRest {
     private static RestProxy proxy;
     private static RestClient client;
@@ -15,22 +18,22 @@ public class RestProxy implements IRest {
     }
 
     @Override
-    public Object getCall(String endPoint, Class c) {
-        return client.getCall(endPoint, c);
+    public void getCall(String endPoint, String jsonData, Callback callback) {
+        client.getCall(endPoint, jsonData, callback);
     }
 
     @Override
-    public void postCall(String endPoint, Class c) {
-        client.postCall(endPoint, c);
+    public void postCall(String endPoint, String jsonData, Callback callback) {
+        client.postCall(endPoint, jsonData, callback);
     }
 
     @Override
-    public void putCall(String endPoint, Class c) {
-        client.putCall(endPoint, c);
+    public void putCall(String endPoint, String jsonData, Callback callback) {
+        client.putCall(endPoint, jsonData, callback);
     }
 
     @Override
-    public void deleteCall(String endPoint, Class c) {
-        client.deleteCall(endPoint, c);
+    public void deleteCall(String endPoint, String jsonData, Callback callback) {
+        client.deleteCall(endPoint, jsonData, callback);
     }
 }

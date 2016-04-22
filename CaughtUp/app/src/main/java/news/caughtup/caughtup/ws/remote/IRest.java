@@ -1,8 +1,10 @@
 package news.caughtup.caughtup.ws.remote;
 
+import news.caughtup.caughtup.entities.Callback;
+
 public interface IRest {
-    Object getCall(String endPoint, Class c);
-    void postCall(String endPoint, Class c);
-    void putCall(String endPoint, Class c);
-    void deleteCall(String endPoint, Class c);
+    void getCall(String endPoint, String jsonData, Callback callback);
+    void postCall(String endPoint, String jsonData, Callback callback);
+    void putCall(String endPoint, String jsonData, Callback callback);
+    void deleteCall(String endPoint, String jsonData, Callback callback);
 }

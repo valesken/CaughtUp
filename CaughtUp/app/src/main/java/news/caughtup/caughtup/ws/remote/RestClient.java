@@ -15,82 +15,61 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import news.caughtup.caughtup.R;
+import news.caughtup.caughtup.entities.Callback;
+import news.caughtup.caughtup.entities.ResponseObject;
 
 public class RestClient implements IRest {
     private static final String SERVER_URL = "http://" + R.string.server_dns + ":8080/caughtup";
-    private enum RequestMethod {
-        GET, POST, PUT, DELETE
+
+    @Override
+    public void getCall(String endPoint, String jsonData, Callback callback) {
+        new RequestTask(callback).execute(endPoint, jsonData, "GET");
     }
 
     @Override
-    public Object getCall(String endPoint, Class c) {
-        return new RequestTask().execute(endPoint, c, RequestMethod.GET);
+    public void postCall(String endPoint, String jsonData, Callback callback) {
+        new RequestTask(callback).execute(endPoint, "POST");
     }
 
     @Override
-    public void postCall(String endPoint, Class c) {
-        new RequestTask().execute(endPoint, c, RequestMethod.POST);
+    public void putCall(String endPoint, String jsonData, Callback callback) {
+        new RequestTask(callback).execute(endPoint, "PUT");
     }
 
     @Override
-    public void putCall(String endPoint, Class c) {
-        new RequestTask().execute(endPoint, c, RequestMethod.PUT);
+    public void deleteCall(String endPoint, String jsonData, Callback callback) {
+        new RequestTask(callback).execute(endPoint, "DELETE");
     }
 
-    @Override
-    public void deleteCall(String endPoint, Class c) {
-        new RequestTask().execute(endPoint, c, RequestMethod.DELETE);
-    }
+    private class RequestTask extends AsyncTask<String, Void, ResponseObject> {
+        private Callback callback;
 
-    private Object readStream(BufferedReader in) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            String line;
-            while ((line = in.readLine()) != null) {
-                sb.append(line);
-            }
-            Gson gson = new Gson();
-            return gson.fromJson(sb.toString(), Object.class);
-        } catch (IOException e) {
-            System.err.println("Error while trying to read content of response");
+        public RequestTask(Callback callback) {
+            this.callback = callback;
         }
-        return null;
-    }
-
-    private void writeStream(OutputStream out, Object obj) {
-        try {
-            String jsonString = new Gson().toJson(obj);
-            out.write(jsonString.getBytes(Charset.forName("UTF-8")));
-        } catch (IOException e) {
-            System.err.println("Error while trying to write to output stream");
-        }
-    }
-
-    private class RequestTask extends AsyncTask {
 
         @Override
-        protected Object doInBackground(Object[] params) {
+        protected ResponseObject doInBackground(String... params) {
             HttpURLConnection urlConnection = null;
             try {
                 URL url = new URL(SERVER_URL + params[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
-                switch ((RequestMethod) params[2]) {
-                    case POST: urlConnection.setRequestMethod("POST");
-                    case PUT: urlConnection.setRequestMethod("PUT");
-                    case DELETE: urlConnection.setRequestMethod("DELETE");
+                switch (params[2]) {
+                    case "POST": urlConnection.setRequestMethod("POST");
+                    case "PUT": urlConnection.setRequestMethod("PUT");
+                    case "DELETE": urlConnection.setRequestMethod("DELETE");
                     default: urlConnection.setRequestMethod("GET");
                 }
-                if (params[2] != RequestMethod.GET) {
+                if (!params[2].equals("GET")) {
                     urlConnection.setChunkedStreamingMode(0);
                     urlConnection.setDoOutput(true);
                 }
                 urlConnection.setDoInput(true);
-
                 OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
                 writeStream(out, params[1]);
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(urlConnection.getInputStream()));
-                return readStream(in);
+                return new ResponseObject(urlConnection.getResponseCode(), readStream(in));
             } catch (MalformedURLException e) {
                 System.err.println("Wrong url format");
             } catch (IOException e) {
@@ -99,6 +78,36 @@ public class RestClient implements IRest {
                 urlConnection.disconnect();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(ResponseObject o) {
+            callback.process(o);
+        }
+
+        private Object readStream(BufferedReader in) {
+            StringBuilder sb = new StringBuilder();
+            try {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+                Gson gson = new Gson();
+                return gson.fromJson(sb.toString(), Object.class);
+            } catch (IOException e) {
+                System.err.println("Error while trying to read content of response");
+            }
+            return null;
+        }
+
+        private void writeStream(OutputStream out, String jsonData) {
+            try {
+                out.write(jsonData.getBytes(Charset.forName("UTF-8")));
+                out.flush();
+                out.close();
+            } catch (IOException e) {
+                System.err.println("Error while trying to write to output stream");
+            }
         }
     }
 }
