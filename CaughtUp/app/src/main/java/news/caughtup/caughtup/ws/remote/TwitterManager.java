@@ -21,7 +21,7 @@ public class TwitterManager implements ISocialMediaManager {
     @Override
     public void share(String message, Article article, Activity activity) {
         TweetComposer.Builder builder = new TweetComposer.Builder(activity)
-                .text(message);
+                .text(message + " @caughtupnews\n" + article.getArticleURI().toString());
         builder.show();
     }
 }
