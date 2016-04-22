@@ -62,6 +62,7 @@ public class RestClient implements IRest {
                 if (!params[2].equals("GET")) {
                     urlConnection.setChunkedStreamingMode(0);
                     urlConnection.setDoOutput(true);
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
                 }
                 urlConnection.setDoInput(true);
                 OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
