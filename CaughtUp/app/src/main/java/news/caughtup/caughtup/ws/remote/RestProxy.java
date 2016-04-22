@@ -1,7 +1,6 @@
 package news.caughtup.caughtup.ws.remote;
 
 import news.caughtup.caughtup.entities.Callback;
-import news.caughtup.caughtup.entities.ResponseObject;
 
 public class RestProxy implements IRest {
     private static RestProxy proxy;
