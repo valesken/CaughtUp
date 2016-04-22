@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import news.caughtup.caughtup.R;
 
 public class LoginActivity extends AppCompatActivity {

@@ -37,7 +37,10 @@
 
             </intent-filter>
         </activity>
-
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="@string/twitter_api_key" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

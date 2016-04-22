@@ -2,7 +2,6 @@ package news.caughtup.caughtup.ui.prime;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,15 +10,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
+import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.UserList;
 
 public class HomeActivity extends AppCompatActivity {
-
     private static FragmentManager fm;
 
     @Override
@@ -29,6 +32,10 @@ public class HomeActivity extends AppCompatActivity {
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
+
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(getResources().getString(R.string.twitter_api_key),
+                getResources().getString(R.string.twitter_api_secret));
+        Fabric.with(this, new Twitter(authConfig), new TweetComposer(), new Crashlytics());
 
         fm = getFragmentManager();
         NewsFeedFragment newsFeedFragment = new NewsFeedFragment();

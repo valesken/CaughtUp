@@ -8,12 +8,6 @@ import com.facebook.share.widget.ShareDialog;
 import news.caughtup.caughtup.entities.Article;
 
 public class FacebookManager implements ISocialMediaManager {
-
-    @Override
-    public void authenticate() {
-        //TODO
-    }
-
     @Override
     public void share(String message, Article article, Activity activity) {
         final ShareDialog shareDialog = new ShareDialog(activity);

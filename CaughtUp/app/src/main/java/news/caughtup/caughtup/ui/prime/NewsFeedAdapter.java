@@ -19,6 +19,7 @@ import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.Article;
 import news.caughtup.caughtup.ws.remote.FacebookManager;
 import news.caughtup.caughtup.ws.remote.ISocialMediaManager;
+import news.caughtup.caughtup.ws.remote.TwitterManager;
 
 public class NewsFeedAdapter extends ArrayAdapter<Article> {
 
@@ -85,17 +86,13 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
                     case "Share on Facebook":
                         String message = String.format("\"%s\" is now shared on Facebook", articleName);
                         ISocialMediaManager fbAccessManager = new FacebookManager();
-                        fbAccessManager.authenticate();
                         fbAccessManager.share(message, article, activity);
-                        Toast.makeText(activity,
-                                message,
-                                Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         break;
                     case "Share on Twitter":
-                        Toast.makeText(activity,
-                                String.format("\"%s\" is now shared on Twitter", articleName),
-                                Toast.LENGTH_SHORT).show();
+                        String tweet = String.format("Checkout \"%s\"!", article.getTitle());
+                        ISocialMediaManager twitterAccessManager = new TwitterManager();
+                        twitterAccessManager.share(tweet, article, activity);
                         dialog.dismiss();
                         break;
                     case "Cancel":
