@@ -15,7 +15,6 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import news.caughtup.caughtup.R;
-import news.caughtup.caughtup.entities.Callback;
 import news.caughtup.caughtup.entities.ResponseObject;
 
 public class RestClient implements IRest {

@@ -1,7 +1,5 @@
 package news.caughtup.caughtup.ws.remote;
 
-import news.caughtup.caughtup.entities.Callback;
-
 public class RestProxy implements IRest {
     private static RestProxy proxy;
     private static RestClient client;
