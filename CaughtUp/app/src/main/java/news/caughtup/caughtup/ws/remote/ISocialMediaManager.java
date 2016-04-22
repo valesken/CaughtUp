@@ -5,7 +5,5 @@ import android.app.Activity;
 import news.caughtup.caughtup.entities.Article;
 
 public interface ISocialMediaManager {
-    void authenticate();
-    void share(String message, Article article);
     void share(String message, Article article, Activity activity);
 }

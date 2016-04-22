@@ -86,8 +86,7 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
                     case "Share on Facebook":
                         String message = String.format("\"%s\" is now shared on Facebook", articleName);
                         ISocialMediaManager fbAccessManager = new FacebookManager();
-                        fbAccessManager.authenticate();
-                        fbAccessManager.share(message, article);
+                        fbAccessManager.share(message, article, activity);
                         Toast.makeText(activity,
                                 message,
                                 Toast.LENGTH_SHORT).show();
@@ -96,7 +95,6 @@ public class NewsFeedAdapter extends ArrayAdapter<Article> {
                     case "Share on Twitter":
                         String tweet = String.format("Checkout \"%s\"!", article.getTitle());
                         ISocialMediaManager twitterAccessManager = new TwitterManager();
-                        twitterAccessManager.authenticate();
                         twitterAccessManager.share(tweet, article, activity);
                         Toast.makeText(activity.getApplicationContext(),
                                 tweet,

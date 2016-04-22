@@ -4,28 +4,14 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.crashlytics.android.Crashlytics;
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
-
-import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
 
 public class LoginActivity extends AppCompatActivity {
-
-    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String TWITTER_KEY = "a0y2v6pCXfyvHgf6HUU8KPdaJ";
-    private static final String TWITTER_SECRET = "qZOUonwGdHEdxtXsrbWSO4HU444uE9r3VFB3fifQriHTauUz2D";
-
     private static FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-        Fabric.with(this, new Twitter(authConfig), new TweetComposer(), new Crashlytics());
         setContentView(R.layout.activity_login);
 
         fm = getFragmentManager();
