@@ -39,8 +39,7 @@
         </activity>
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="@string/twitter_api_key" />
+            android:value="@string/fabric_key" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

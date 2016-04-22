@@ -4,6 +4,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.crashlytics.android.Crashlytics;
+
+import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -13,7 +17,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        Fabric.with(this, new Crashlytics());
         fm = getFragmentManager();
 
         LoginFragment loginFragment = new LoginFragment();
