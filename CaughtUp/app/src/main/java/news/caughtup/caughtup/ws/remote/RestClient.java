@@ -1,8 +1,14 @@
 package news.caughtup.caughtup.ws.remote;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -16,9 +22,10 @@ import java.nio.charset.Charset;
 
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
+import news.caughtup.caughtup.entities.User;
 
 public class RestClient implements IRest {
-    private static final String SERVER_URL = "http://" + R.string.server_dns + ":8080/caughtup";
+    private static final String SERVER_URL = "http://ec2-54-153-56-178.us-west-1.compute.amazonaws.com:8080/caughtup";
 
     @Override
     public void getCall(String endPoint, String jsonData, Callback callback) {
@@ -27,17 +34,17 @@ public class RestClient implements IRest {
 
     @Override
     public void postCall(String endPoint, String jsonData, Callback callback) {
-        new RequestTask(callback).execute(endPoint, "POST");
+        new RequestTask(callback).execute(endPoint, jsonData, "POST");
     }
 
     @Override
     public void putCall(String endPoint, String jsonData, Callback callback) {
-        new RequestTask(callback).execute(endPoint, "PUT");
+        new RequestTask(callback).execute(endPoint, jsonData, "PUT");
     }
 
     @Override
     public void deleteCall(String endPoint, String jsonData, Callback callback) {
-        new RequestTask(callback).execute(endPoint, "DELETE");
+        new RequestTask(callback).execute(endPoint, jsonData, "DELETE");
     }
 
     private class RequestTask extends AsyncTask<String, Void, ResponseObject> {
@@ -63,10 +70,9 @@ public class RestClient implements IRest {
                     urlConnection.setChunkedStreamingMode(0);
                     urlConnection.setDoOutput(true);
                     urlConnection.setRequestProperty("Content-Type", "application/json");
+                    OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+                    writeStream(out, params[1]);
                 }
-                urlConnection.setDoInput(true);
-                OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-                writeStream(out, params[1]);
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(urlConnection.getInputStream()));
                 return new ResponseObject(urlConnection.getResponseCode(), readStream(in));
@@ -85,17 +91,19 @@ public class RestClient implements IRest {
             callback.process(o);
         }
 
-        private Object readStream(BufferedReader in) {
+        private JSONObject readStream(BufferedReader in) {
             StringBuilder sb = new StringBuilder();
             try {
                 String line;
                 while ((line = in.readLine()) != null) {
                     sb.append(line);
                 }
-                Gson gson = new Gson();
-                return gson.fromJson(sb.toString(), Object.class);
+                JSONObject myObject = new JSONObject(sb.toString());
+                return myObject;
             } catch (IOException e) {
                 System.err.println("Error while trying to read content of response");
+            } catch (JSONException e) {
+                return null;
             }
             return null;
         }

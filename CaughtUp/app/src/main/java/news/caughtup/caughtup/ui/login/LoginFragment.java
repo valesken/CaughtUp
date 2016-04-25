@@ -3,13 +3,21 @@ package news.caughtup.caughtup.ui.login;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import news.caughtup.caughtup.R;
+import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.ui.prime.HomeActivity;
+import news.caughtup.caughtup.ws.remote.Callback;
+import news.caughtup.caughtup.ws.remote.RestProxy;
 
 public class LoginFragment extends Fragment {
     @Override
@@ -27,12 +35,36 @@ public class LoginFragment extends Fragment {
             }
         });
 
+        final EditText userName = (EditText) view.findViewById(R.id.login_username_edit_text);
+        final EditText password = (EditText) view.findViewById(R.id.login_password_edit_text);
+
         Button loginButton = (Button) view.findViewById(R.id.login_login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
-                startActivity(intent);
+                Callback callback = new Callback() {
+                    @Override
+                    public void process(ResponseObject responseObject) {
+                        if (responseObject.getResponseCode() == 200 ) {
+                            JSONObject jsonObject = (JSONObject) responseObject.getJsonObject();
+                            try {
+                                Log.d("Username", jsonObject.get("username").toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                };
+                RestProxy proxy = RestProxy.getProxy();
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("password", password.getText().toString());
+                } catch (JSONException e) {
+                    Log.e("LoginFragment", "Error trying to create JSON object");
+                }
+                proxy.postCall("/login/dimitris", jsonObject.toString(), callback);
             }
         });
 

@@ -1,10 +1,12 @@
 package news.caughtup.caughtup.entities;
 
+import org.json.JSONObject;
+
 public class ResponseObject {
     private int responseCode;
-    private Object jsonObject;
+    private JSONObject jsonObject;
 
-    public ResponseObject(int responseCode, Object jsonObject) {
+    public ResponseObject(int responseCode, JSONObject jsonObject) {
         this.responseCode = responseCode;
         this.jsonObject = jsonObject;
     }
@@ -17,11 +19,11 @@ public class ResponseObject {
         this.responseCode = responseCode;
     }
 
-    public Object getJsonObject() {
+    public JSONObject getJsonObject() {
         return jsonObject;
     }
 
-    public void setJsonObject(Object jsonObject) {
+    public void setJsonObject(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
     }
 }
