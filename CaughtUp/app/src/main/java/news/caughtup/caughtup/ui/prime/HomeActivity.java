@@ -2,6 +2,7 @@ package news.caughtup.caughtup.ui.prime;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,12 +10,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+
+import java.util.Stack;
 
 import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
@@ -24,7 +28,21 @@ import news.caughtup.caughtup.util.Constants;
 import news.caughtup.caughtup.util.StringRetriever;
 
 public class HomeActivity extends AppCompatActivity {
+
     private static FragmentManager fm;
+    private Toolbar myToolbar;
+    private Stack<String> myToolbarTitles;
+
+    public static void executeTransaction(Fragment fragment, String tag) {
+        fm.beginTransaction()
+                .replace(R.id.home_main_container, fragment)
+                .addToBackStack(tag)
+                .commit();
+    }
+
+    public static void restorePreviousFragment() {
+        fm.popBackStack();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +61,8 @@ public class HomeActivity extends AppCompatActivity {
         NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
         executeTransaction(newsFeedFragment, "newsfeed");
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.home_action_bar);
+        myToolbarTitles = new Stack<>();
+        myToolbar = (Toolbar) findViewById(R.id.home_action_bar);
         setSupportActionBar(myToolbar);
         if (myToolbar != null) {
             myToolbar.setNavigationIcon(R.drawable.profile_icon);
@@ -91,16 +110,21 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (fm.getBackStackEntryCount() > 1) {
             fm.popBackStack();
+            if(myToolbarTitles.size() > 1) { // Safety check - better to show wrong title than crash the app
+                myToolbarTitles.pop();
+                setToolbarTitle(myToolbarTitles.pop());
+            }
         } else {
             super.onBackPressed();
         }
     }
 
-    public static void executeTransaction(Fragment fragment, String tag) {
-        fm.beginTransaction()
-                .replace(R.id.home_main_container, fragment)
-                .addToBackStack(tag)
-                .commit();
+    public void setToolbarTitle(String title) {
+        if(myToolbar != null) {
+            TextView titleTextView = (TextView) myToolbar.findViewById(R.id.home_toolbar_title);
+            titleTextView.setText(title);
+            myToolbarTitles.push(title);
+        }
     }
 
     private void setUpTestUsers() {
@@ -122,9 +146,5 @@ public class HomeActivity extends AppCompatActivity {
         user2.setAboutMe("Who am I? Who are you? Why are you asking so many questions?");
         users.addToUserList(user2);
         user1.addFollower(user2);
-    }
-
-    public static void restorePreviousFragment() {
-        fm.popBackStack();
     }
 }

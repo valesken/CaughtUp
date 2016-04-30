@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.Article;
 import news.caughtup.caughtup.entities.ICaughtUpItem;
+import news.caughtup.caughtup.util.StringRetriever;
 
 public class NewsFeedFragment extends ListFragment {
     private ArrayList<ICaughtUpItem> dataArray = new ArrayList<>();
@@ -16,6 +17,9 @@ public class NewsFeedFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StringRetriever retriever = StringRetriever.getInstance();
+        ((HomeActivity) getActivity()).setToolbarTitle(retriever.getStringById(R.string.news_feed_title));
+
         /* For demonstration only! */
         populateDataArray();
 

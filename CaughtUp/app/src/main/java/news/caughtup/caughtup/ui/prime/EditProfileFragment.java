@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import news.caughtup.caughtup.R;
+import news.caughtup.caughtup.util.StringRetriever;
 
 public class EditProfileFragment extends Fragment {
     private static final int REQUEST_CAMERA = 1;
@@ -23,6 +24,8 @@ public class EditProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        StringRetriever retriever = StringRetriever.getInstance();
+        ((HomeActivity) getActivity()).setToolbarTitle(retriever.getStringById(R.string.edit_profile_title));
 
         RelativeLayout editProfilePicture = (RelativeLayout) view.findViewById(R.id.edit_profile_picture_relative_layout);
         editProfilePicture.setOnTouchListener(new View.OnTouchListener() {

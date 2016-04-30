@@ -13,6 +13,7 @@ import news.caughtup.caughtup.entities.ICaughtUpItem;
 import news.caughtup.caughtup.entities.NewsSource;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.Users;
+import news.caughtup.caughtup.util.StringRetriever;
 
 public class SearchFragment extends ListFragment {
 
@@ -21,6 +22,8 @@ public class SearchFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StringRetriever retriever = StringRetriever.getInstance();
+        ((HomeActivity) getActivity()).setToolbarTitle(retriever.getStringById(R.string.search_title));
 
         /* For demonstration only! */
         addTestItems();

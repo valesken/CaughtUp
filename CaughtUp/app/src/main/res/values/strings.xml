@@ -1,7 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Titles -->
     <string name="app_name">CaughtUp</string>
-    <string name="toolbar_title">News Feed</string>
+    <string name="news_feed_title">News Feed</string>
+    <string name="search_title">Search</string>
+    <string name="edit_profile_title">Edit Your Profile</string>
+    <string name="change_password_title">Change Your Password</string>
 
     <!-- Alt-text for images -->
     <string name="search_icon">Search Icon</string>
