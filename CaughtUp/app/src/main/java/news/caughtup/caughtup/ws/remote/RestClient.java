@@ -68,7 +68,6 @@ public class RestClient implements IRest {
                     writeStream(out, params[1]);
                 }
                 int responseCode = urlConnection.getResponseCode();
-                Log.e("Null note", "ResponseCode is " + Integer.toString(responseCode));
                 BufferedReader in;
                 if(responseCode < 400) {
                     in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));

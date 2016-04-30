@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import news.caughtup.caughtup.R;
+import news.caughtup.caughtup.util.StringRetriever;
 
 public class EditProfileFragment extends Fragment {
     private static final int REQUEST_CAMERA = 1;
@@ -38,7 +39,7 @@ public class EditProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
-                HomeActivity.executeTransaction(changePasswordFragment, "change_password");
+                HomeActivity.executeTransaction(changePasswordFragment, "change_password", R.string.change_password_title);
             }
         });
 

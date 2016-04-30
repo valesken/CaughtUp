@@ -2,8 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/search_icon"
-        android:icon="@drawable/search_icon"
+    <item
+        android:id="@+id/search_icon"
         android:title="@string/search_icon"
-        app:showAsAction="always"/>
+        android:icon="@drawable/search_icon"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
+
 </menu>

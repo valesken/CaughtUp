@@ -30,7 +30,8 @@ public class PublicProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_public_profile, container, false);
-        context = getActivity().getApplicationContext();
+        HomeActivity activity = (HomeActivity) getActivity();
+        context = activity.getApplicationContext();
         Bundle args = getArguments();
         user = Users.getInstance().getUser(args.getString("user"));
 
