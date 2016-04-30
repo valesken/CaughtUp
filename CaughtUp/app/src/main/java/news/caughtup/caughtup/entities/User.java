@@ -17,6 +17,7 @@ public class User extends Resource implements ICaughtUpItem {
     private char gender;
     private String location;
     private String aboutMe;
+    private String email;
     private List<User> followers;
 
     // Constructor
@@ -50,6 +51,10 @@ public class User extends Resource implements ICaughtUpItem {
         this.aboutMe = aboutMe;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void addFollower(User user) {
         followers.add(user);
     }
@@ -77,6 +82,10 @@ public class User extends Resource implements ICaughtUpItem {
 
     public String getAboutMe() {
         return aboutMe;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public List<User> getFollowers() {

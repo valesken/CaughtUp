@@ -3,10 +3,6 @@ package news.caughtup.caughtup.ws.remote;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,13 +16,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
-import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.util.StringRetriever;
 
 public class RestClient implements IRest {
-    private static final String SERVER_URL = "http://ec2-54-153-56-178.us-west-1.compute.amazonaws.com:8080/caughtup";
-
     @Override
     public void getCall(String endPoint, String jsonData, Callback callback) {
         new RequestTask(callback).execute(endPoint, jsonData, "GET");
@@ -56,9 +49,10 @@ public class RestClient implements IRest {
 
         @Override
         protected ResponseObject doInBackground(String... params) {
+            String server_url = StringRetriever.getInstance().getServerConnectionString();
             HttpURLConnection urlConnection = null;
             try {
-                URL url = new URL(SERVER_URL + params[0]);
+                URL url = new URL(server_url + params[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 switch (params[2]) {
                     case "POST": urlConnection.setRequestMethod("POST");
@@ -73,13 +67,20 @@ public class RestClient implements IRest {
                     OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
                     writeStream(out, params[1]);
                 }
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(urlConnection.getInputStream()));
-                return new ResponseObject(urlConnection.getResponseCode(), readStream(in));
+                int responseCode = urlConnection.getResponseCode();
+                Log.e("Null note", "ResponseCode is " + Integer.toString(responseCode));
+                BufferedReader in;
+                if(responseCode < 400) {
+                    in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                } else {
+                    in = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
+                }
+                return new ResponseObject(responseCode, readStream(in));
             } catch (MalformedURLException e) {
                 System.err.println("Wrong url format");
             } catch (IOException e) {
                 System.err.println("Error while trying to open a stream on the HTTP response");
+                e.printStackTrace();
             } finally {
                 urlConnection.disconnect();
             }
@@ -88,7 +89,10 @@ public class RestClient implements IRest {
 
         @Override
         protected void onPostExecute(ResponseObject o) {
-            callback.process(o);
+            // Will be null if the server is down or ip address is out of date
+            if(o != null) {
+                callback.process(o);
+            }
         }
 
         private JSONObject readStream(BufferedReader in) {

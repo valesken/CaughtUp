@@ -20,6 +20,8 @@ import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.Users;
+import news.caughtup.caughtup.util.Constants;
+import news.caughtup.caughtup.util.StringRetriever;
 
 public class HomeActivity extends AppCompatActivity {
     private static FragmentManager fm;
@@ -28,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        StringRetriever.initializeStringRetriever(getResources(), Constants.IS_LOCAL);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
@@ -42,17 +45,21 @@ public class HomeActivity extends AppCompatActivity {
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.home_action_bar);
         setSupportActionBar(myToolbar);
-        myToolbar.setNavigationIcon(R.drawable.profile_icon);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (myToolbar != null) {
+            myToolbar.setNavigationIcon(R.drawable.profile_icon);
+            myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                 /* User selected to go to their profile page, create the edit profile fragment */
-                EditProfileFragment editProfileFragment = new EditProfileFragment();
-                executeTransaction(editProfileFragment, "edit_profile");
-            }
-        });
+                    EditProfileFragment editProfileFragment = new EditProfileFragment();
+                    executeTransaction(editProfileFragment, "edit_profile");
+                }
+            });
+        }
+        setSupportActionBar(myToolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         // FOR TESTING ONLY
         setUpTestUsers();
