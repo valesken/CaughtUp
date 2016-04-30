@@ -42,17 +42,21 @@ public class HomeActivity extends AppCompatActivity {
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.home_action_bar);
         setSupportActionBar(myToolbar);
-        myToolbar.setNavigationIcon(R.drawable.profile_icon);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (myToolbar != null) {
+            myToolbar.setNavigationIcon(R.drawable.profile_icon);
+            myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                 /* User selected to go to their profile page, create the edit profile fragment */
-                EditProfileFragment editProfileFragment = new EditProfileFragment();
-                executeTransaction(editProfileFragment, "edit_profile");
-            }
-        });
+                    EditProfileFragment editProfileFragment = new EditProfileFragment();
+                    executeTransaction(editProfileFragment, "edit_profile");
+                }
+            });
+        }
+        setSupportActionBar(myToolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         // FOR TESTING ONLY
         setUpTestUsers();

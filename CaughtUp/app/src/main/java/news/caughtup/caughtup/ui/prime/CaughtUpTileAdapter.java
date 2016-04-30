@@ -1,5 +1,6 @@
 package news.caughtup.caughtup.ui.prime;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -47,6 +48,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         return getNewsSourceView(convertView, item);
     }
 
+    @SuppressLint("InflateParams")
     private View getArticleView(View convertView, ICaughtUpItem item) {
 
         final Article article = (Article) item;
@@ -95,6 +97,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         return convertView;
     }
 
+    @SuppressLint("InflateParams")
     private View getUserView(View convertView, ICaughtUpItem item) {
         final User user = (User) item;
         // if we weren't given a view, inflate one
@@ -138,6 +141,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         return convertView;
     }
 
+    @SuppressLint("InflateParams")
     private View getNewsSourceView(View convertView, ICaughtUpItem item) {
         NewsSource newsSource = (NewsSource) item;
         // if we weren't given a view, inflate one

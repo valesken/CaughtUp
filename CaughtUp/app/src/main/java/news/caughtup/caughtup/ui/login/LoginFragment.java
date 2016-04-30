@@ -13,8 +13,6 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
-
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.ui.prime.HomeActivity;
@@ -55,7 +53,7 @@ public class LoginFragment extends Fragment {
                         @Override
                         public void process(ResponseObject responseObject) {
                             if (responseObject.getResponseCode() == 200) {
-                                JSONObject jsonObject = (JSONObject) responseObject.getJsonObject();
+                                JSONObject jsonObject = responseObject.getJsonObject();
                                 try {
                                     String responseUserName = jsonObject.getString("username");
                                     if(responseUserName == null || responseUserName.isEmpty())
@@ -69,6 +67,7 @@ public class LoginFragment extends Fragment {
                                 }
                                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                                 startActivity(intent);
+                                getActivity().finish(); // Don't stack this activity behind the home activity
                             }
                         }
                     };
