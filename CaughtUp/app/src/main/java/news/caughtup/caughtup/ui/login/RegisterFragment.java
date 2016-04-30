@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +17,6 @@ import org.json.JSONObject;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.RegistrationUser;
 import news.caughtup.caughtup.entities.ResponseObject;
-import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.ui.prime.HomeActivity;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
@@ -29,6 +29,8 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_register, container, false);
+
+        // Detect "Register" button clicked
         Button registerButton = (Button) view.findViewById(R.id.register_register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,6 +38,7 @@ public class RegisterFragment extends Fragment {
                 registerButtonClicked();
             }
         });
+
         return view;
     }
 
@@ -44,7 +47,15 @@ public class RegisterFragment extends Fragment {
         RegistrationUser newUser = getRegistrationUser();
 
         // Ignore click if userName and/or password if empty
-        if(newUser.confirmName() && newUser.confirmPassword()) {
+        if(!newUser.confirmName()) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    getResources().getString(R.string.empty_user_name),
+                    Toast.LENGTH_LONG).show();
+        } else if(!newUser.confirmPassword()) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    getResources().getString(R.string.register_password_error),
+                    Toast.LENGTH_LONG).show();
+        } else {
             Callback callback = getRegisterCallback();
             makeRegisterCall(newUser, callback);
         }
@@ -71,22 +82,23 @@ public class RegisterFragment extends Fragment {
             @Override
             public void process(ResponseObject responseObject) {
                 if (responseObject.getResponseCode() == 200) {
-                    Log.d("Response Code", "We got a 200 OK!");
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
                         String responseUserName = jsonObject.getString("username");
-                        if(responseUserName == null || responseUserName.isEmpty())
-                            Log.d("Username", "Cannot be found");
-                        else
-                            Log.d("Username", jsonObject.get("username").toString());
+                        if(responseUserName != null && !responseUserName.isEmpty()) {
+                            Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            startActivity(intent);
+                            getActivity().finish(); // Don't stack this activity behind the home activity
+                        }
                     } catch (JSONException ignored) {
                         Log.e("JSONException", "Couldn't read returned JSON");
                     } catch (NullPointerException ignored) {
                         Log.e("NullPointerException", "No JSON Object in response");
                     }
-                    Intent intent = new Intent(getActivity(), HomeActivity.class);
-                    startActivity(intent);
-                    getActivity().finish(); // Don't stack this activity behind the home activity
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getResources().getString(R.string.register_server_error),
+                            Toast.LENGTH_LONG).show();
                 }
             }
         };

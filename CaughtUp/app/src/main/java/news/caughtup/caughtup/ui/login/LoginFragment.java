@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,8 +59,16 @@ public class LoginFragment extends Fragment {
         String userNameString = userName.getText().toString();
         String passwordString = password.getText().toString();
 
-        // Ignore click if userName and/or password if empty
-        if(!userNameString.isEmpty() && !passwordString.isEmpty()) {
+        // Ignore click if userName or password is empty
+        if(userNameString.isEmpty()) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    getResources().getString(R.string.empty_user_name),
+                    Toast.LENGTH_LONG).show();
+        } else if(passwordString.isEmpty()) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    getResources().getString(R.string.empty_password),
+                    Toast.LENGTH_LONG).show();
+        } else {
             Callback callback = getLoginCallback();
             makeLoginCall(userNameString, passwordString, callback);
         }
@@ -70,22 +79,23 @@ public class LoginFragment extends Fragment {
             @Override
             public void process(ResponseObject responseObject) {
                 if (responseObject.getResponseCode() == 200) {
-                    Log.d("Response Code", "We got a 200 OK!");
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
                         String responseUserName = jsonObject.getString("username");
-                        if(responseUserName == null || responseUserName.isEmpty())
-                            Log.d("Username", "Cannot be found");
-                        else
-                            Log.d("Username", jsonObject.get("username").toString());
+                        if(responseUserName != null && !responseUserName.isEmpty()) {
+                            Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            startActivity(intent);
+                            getActivity().finish(); // Don't stack this activity behind the home activity
+                        }
                     } catch (JSONException ignored) {
                         Log.e("JSONException", "Couldn't read returned JSON");
                     } catch (NullPointerException ignored) {
                         Log.e("NullPointerException", "No JSON Object in response");
                     }
-                    Intent intent = new Intent(getActivity(), HomeActivity.class);
-                    startActivity(intent);
-                    getActivity().finish(); // Don't stack this activity behind the home activity
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getResources().getString(R.string.login_server_error),
+                            Toast.LENGTH_LONG).show();
                 }
             }
         };

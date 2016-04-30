@@ -73,13 +73,19 @@ public class RestClient implements IRest {
                     OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
                     writeStream(out, params[1]);
                 }
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(urlConnection.getInputStream()));
-                return new ResponseObject(urlConnection.getResponseCode(), readStream(in));
+                int responseCode = urlConnection.getResponseCode();
+                BufferedReader in;
+                if(responseCode < 400) {
+                    in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                } else {
+                    in = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
+                }
+                return new ResponseObject(responseCode, readStream(in));
             } catch (MalformedURLException e) {
                 System.err.println("Wrong url format");
             } catch (IOException e) {
                 System.err.println("Error while trying to open a stream on the HTTP response");
+                e.printStackTrace();
             } finally {
                 urlConnection.disconnect();
             }
@@ -88,6 +94,9 @@ public class RestClient implements IRest {
 
         @Override
         protected void onPostExecute(ResponseObject o) {
+            if(o == null) {
+                Log.e("Null note", "ResponseObject is null");
+            }
             callback.process(o);
         }
 
