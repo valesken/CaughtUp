@@ -22,8 +22,6 @@ public class SearchFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StringRetriever retriever = StringRetriever.getInstance();
-        ((HomeActivity) getActivity()).setToolbarTitle(retriever.getStringById(R.string.search_title));
 
         /* For demonstration only! */
         addTestItems();

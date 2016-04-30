@@ -17,8 +17,6 @@ public class NewsFeedFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StringRetriever retriever = StringRetriever.getInstance();
-        ((HomeActivity) getActivity()).setToolbarTitle(retriever.getStringById(R.string.news_feed_title));
 
         /* For demonstration only! */
         populateDataArray();

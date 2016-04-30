@@ -2,7 +2,6 @@ package news.caughtup.caughtup.ui.prime;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -30,18 +29,19 @@ import news.caughtup.caughtup.util.StringRetriever;
 public class HomeActivity extends AppCompatActivity {
 
     private static FragmentManager fm;
-    private Toolbar myToolbar;
-    private Stack<String> myToolbarTitles;
+    private static Toolbar myToolbar;
+    private static Stack<String> myToolbarTitles;
 
-    public static void executeTransaction(Fragment fragment, String tag) {
+    public static void executeTransaction(Fragment fragment, String tag, int title_id) {
+        executeTransaction(fragment, tag, StringRetriever.getInstance().getStringById(title_id));
+    }
+
+    public static void executeTransaction(Fragment fragment, String tag, String title) {
+        setToolbarTitle(title);
         fm.beginTransaction()
                 .replace(R.id.home_main_container, fragment)
                 .addToBackStack(tag)
                 .commit();
-    }
-
-    public static void restorePreviousFragment() {
-        fm.popBackStack();
     }
 
     @Override
@@ -57,10 +57,7 @@ public class HomeActivity extends AppCompatActivity {
                 getResources().getString(R.string.twitter_api_secret));
         Fabric.with(this, new Twitter(authConfig), new TweetComposer());
 
-        fm = getFragmentManager();
-        NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
-        executeTransaction(newsFeedFragment, "newsfeed");
-
+        // Set up toolbar
         myToolbarTitles = new Stack<>();
         myToolbar = (Toolbar) findViewById(R.id.home_action_bar);
         setSupportActionBar(myToolbar);
@@ -69,16 +66,20 @@ public class HomeActivity extends AppCompatActivity {
             myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                /* User selected to go to their profile page, create the edit profile fragment */
+                    /* User selected to go to their profile page, create the edit profile fragment */
                     EditProfileFragment editProfileFragment = new EditProfileFragment();
-                    executeTransaction(editProfileFragment, "edit_profile");
+                    executeTransaction(editProfileFragment, "edit_profile", R.string.edit_profile_title);
                 }
             });
         }
-        setSupportActionBar(myToolbar);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+
+        // Add new fragment
+        fm = getFragmentManager();
+        NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
+        executeTransaction(newsFeedFragment, "newsfeed", R.string.news_feed_title);
 
         // FOR TESTING ONLY
         setUpTestUsers();
@@ -96,9 +97,8 @@ public class HomeActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.search_icon:
                 // User chose the "Search" item, show the search fragment
-                executeTransaction(new SearchFragment(), "search");
+                executeTransaction(new SearchFragment(), "search", R.string.search_title);
                 return true;
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -112,14 +112,15 @@ public class HomeActivity extends AppCompatActivity {
             fm.popBackStack();
             if(myToolbarTitles.size() > 1) { // Safety check - better to show wrong title than crash the app
                 myToolbarTitles.pop();
-                setToolbarTitle(myToolbarTitles.pop());
+                String next = myToolbarTitles.pop();
+                setToolbarTitle(next);
             }
         } else {
             super.onBackPressed();
         }
     }
 
-    public void setToolbarTitle(String title) {
+    private static void setToolbarTitle(String title) {
         if(myToolbar != null) {
             TextView titleTextView = (TextView) myToolbar.findViewById(R.id.home_toolbar_title);
             titleTextView.setText(title);

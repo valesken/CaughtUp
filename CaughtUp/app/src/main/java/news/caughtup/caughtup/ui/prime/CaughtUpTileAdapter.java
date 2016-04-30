@@ -131,7 +131,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
                 Bundle args = new Bundle();
                 args.putString("user", user.getName());
                 publicProfile.setArguments(args);
-                HomeActivity.executeTransaction(publicProfile, user.getName());
+                HomeActivity.executeTransaction(publicProfile, user.getName(), user.getName());
                 return false;
             }
         });

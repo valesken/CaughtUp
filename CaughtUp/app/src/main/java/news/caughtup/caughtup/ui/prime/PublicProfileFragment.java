@@ -34,7 +34,6 @@ public class PublicProfileFragment extends Fragment {
         context = activity.getApplicationContext();
         Bundle args = getArguments();
         user = Users.getInstance().getUser(args.getString("user"));
-        activity.setToolbarTitle(user.getName());
 
         List<User> followers = user != null ? user.getFollowers() : null;
         String followersMsg = String.format("You have %d followers", followers != null ? followers.size() : 0);
