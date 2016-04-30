@@ -3,6 +3,7 @@ package news.caughtup.caughtup.ui.prime;
 import android.app.ListFragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +18,23 @@ import news.caughtup.caughtup.util.StringRetriever;
 
 public class SearchFragment extends ListFragment {
 
-    List<ICaughtUpItem> dataArray = new ArrayList<>();
+    private List<ICaughtUpItem> dataArray = new ArrayList<>();
+    private String query;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        query = args.getString("query");
 
         /* For demonstration only! */
         addTestItems();
 
         setListAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     private void addTestItems() {

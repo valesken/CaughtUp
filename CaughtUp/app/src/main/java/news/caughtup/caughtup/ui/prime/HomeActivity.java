@@ -2,12 +2,17 @@ package news.caughtup.caughtup.ui.prime;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.SearchManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -31,12 +36,14 @@ public class HomeActivity extends AppCompatActivity {
     private static FragmentManager fm;
     private static Toolbar myToolbar;
     private static Stack<String> myToolbarTitles;
+    private static Fragment currentFragment;
 
     public static void executeTransaction(Fragment fragment, String tag, int title_id) {
         executeTransaction(fragment, tag, StringRetriever.getInstance().getStringById(title_id));
     }
 
     public static void executeTransaction(Fragment fragment, String tag, String title) {
+        currentFragment = fragment;
         setToolbarTitle(title);
         fm.beginTransaction()
                 .replace(R.id.home_main_container, fragment)
@@ -87,8 +94,61 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        final TextView titleTextView = (TextView) myToolbar.findViewById(R.id.home_toolbar_title);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_items, menu);
+
+        //region search icon
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search_icon));
+
+        // Detect when Search Icon clicked
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                titleTextView.setVisibility(View.GONE);
+            }
+        });
+
+        // Detect when closing Search
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                titleTextView.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
+        // Detect when query entered
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Clear query so as not to log both KEY_UP and KEY_DOWN events (would trigger this listener twice)
+                searchView.setIconified(true);
+
+                String currentFragmentName = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
+                if(!currentFragmentName.equals("search")) {
+                    // Pass query to SearchFragment
+                    SearchFragment sf = new SearchFragment();
+                    Bundle args = new Bundle();
+                    args.putString("query", query);
+                    sf.setArguments(args);
+
+                    // Launch new Fragment
+                    executeTransaction(sf, "search", R.string.search_title);
+                } else {
+                    ((SearchFragment) currentFragment).setQuery(query);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        //endregion
+
         return true;
     }
 
