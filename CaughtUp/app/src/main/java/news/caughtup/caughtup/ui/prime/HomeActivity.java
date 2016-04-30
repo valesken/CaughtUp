@@ -3,6 +3,7 @@ package news.caughtup.caughtup.ui.prime;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SearchManager;
+import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,12 +23,16 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Stack;
 
 import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.Users;
+import news.caughtup.caughtup.ui.login.LoginActivity;
 import news.caughtup.caughtup.util.Constants;
 import news.caughtup.caughtup.util.StringRetriever;
 
@@ -37,7 +42,9 @@ public class HomeActivity extends AppCompatActivity {
     private static Toolbar myToolbar;
     private static Stack<String> myToolbarTitles;
     private static Fragment currentFragment;
+    private static User currentUser;
 
+    //region public static methods
     public static void executeTransaction(Fragment fragment, String tag, int title_id) {
         executeTransaction(fragment, tag, StringRetriever.getInstance().getStringById(title_id));
     }
@@ -51,6 +58,16 @@ public class HomeActivity extends AppCompatActivity {
                 .commit();
     }
 
+    private static void setToolbarTitle(String title) {
+        if(myToolbar != null) {
+            TextView titleTextView = (TextView) myToolbar.findViewById(R.id.home_toolbar_title);
+            titleTextView.setText(title);
+            myToolbarTitles.push(title);
+        }
+    }
+    //endregion
+
+    //region Override methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +104,9 @@ public class HomeActivity extends AppCompatActivity {
         fm = getFragmentManager();
         NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
         executeTransaction(newsFeedFragment, "newsfeed", R.string.news_feed_title);
+
+        // Get current user
+        setUpCurrentUser();
 
         // FOR TESTING ONLY
         setUpTestUsers();
@@ -127,7 +147,7 @@ public class HomeActivity extends AppCompatActivity {
                 searchView.setIconified(true);
 
                 String currentFragmentName = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
-                if(!currentFragmentName.equals("search")) {
+                if (!currentFragmentName.equals("search")) {
                     // Pass query to SearchFragment
                     SearchFragment sf = new SearchFragment();
                     Bundle args = new Bundle();
@@ -179,12 +199,26 @@ public class HomeActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+    //endregion
 
-    private static void setToolbarTitle(String title) {
-        if(myToolbar != null) {
-            TextView titleTextView = (TextView) myToolbar.findViewById(R.id.home_toolbar_title);
-            titleTextView.setText(title);
-            myToolbarTitles.push(title);
+    //region public accessors
+    public User getCurrentUser() {
+        return currentUser;
+    }
+    //endregion
+
+    //region private helper methods
+    private void setUpCurrentUser() {
+        try {
+            Intent intent = getIntent();
+            JSONObject jsonObject = new JSONObject(intent.getStringExtra("user"));
+            String username = jsonObject.getString("username");
+            currentUser = new User(username);
+        } catch (JSONException ignored) {
+            Log.e("JSONException", "Response was not properly formatted. Returning to Login Activity.");
+            Intent returnIntent = new Intent(this, LoginActivity.class);
+            startActivity(returnIntent);
+            finish(); // Don't stack this activity behind the login activity
         }
     }
 
@@ -208,4 +242,5 @@ public class HomeActivity extends AppCompatActivity {
         users.addToUserList(user2);
         user1.addFollower(user2);
     }
+    //endregion
 }

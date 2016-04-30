@@ -59,7 +59,7 @@ public class LoginFragment extends Fragment {
         String userNameString = userName.getText().toString();
         String passwordString = password.getText().toString();
 
-        // Ignore click if userName or password is empty
+        // Ignore click if userName and/or password if empty
         if(userNameString.isEmpty()) {
             Toast.makeText(getActivity().getApplicationContext(),
                     getResources().getString(R.string.empty_user_name),
@@ -68,7 +68,7 @@ public class LoginFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(),
                     getResources().getString(R.string.empty_password),
                     Toast.LENGTH_LONG).show();
-        } else {
+        } else if(!userNameString.isEmpty() && !passwordString.isEmpty()) {
             Callback callback = getLoginCallback();
             makeLoginCall(userNameString, passwordString, callback);
         }
@@ -84,6 +84,7 @@ public class LoginFragment extends Fragment {
                         String responseUserName = jsonObject.getString("username");
                         if(responseUserName != null && !responseUserName.isEmpty()) {
                             Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            intent.putExtra("user", jsonObject.toString());
                             startActivity(intent);
                             getActivity().finish(); // Don't stack this activity behind the home activity
                         }
