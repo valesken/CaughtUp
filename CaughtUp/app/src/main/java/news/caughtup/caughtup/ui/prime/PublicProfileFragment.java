@@ -19,7 +19,7 @@ import java.util.List;
 
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.User;
-import news.caughtup.caughtup.entities.UserList;
+import news.caughtup.caughtup.entities.Users;
 
 public class PublicProfileFragment extends Fragment {
 
@@ -32,7 +32,7 @@ public class PublicProfileFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_public_profile, container, false);
         context = getActivity().getApplicationContext();
         Bundle args = getArguments();
-        user = UserList.getUser(args.getString("user"));
+        user = Users.getInstance().getUser(args.getString("user"));
 
         List<User> followers = user != null ? user.getFollowers() : null;
         String followersMsg = String.format("You have %d followers", followers != null ? followers.size() : 0);
@@ -53,7 +53,7 @@ public class PublicProfileFragment extends Fragment {
         //region set contents of layout elements
         Drawable userProfileDrawable = getResources().getDrawable(user.getProfileImageId(), null);
         userProfilePic.setImageDrawable(userProfileDrawable);
-        userName.setText(user.getUserName());
+        userName.setText(user.getName());
         userGender.setText(Character.toString(user.getGender()));
         userAge.setText(String.format("%d", user.getAge()));
         userFullName.setText(user.getFullName());
@@ -74,12 +74,12 @@ public class PublicProfileFragment extends Fragment {
                 if (userFollowButton.getText().toString().equals(getResources().getString(R.string.follow_me_button_text)
                 )) {
                     Toast.makeText(context,
-                            String.format("Now following %s!", user.getUserName()),
+                            String.format("Now following %s!", user.getName()),
                             Toast.LENGTH_SHORT).show();
                     userFollowButton.setText(getResources().getString(R.string.unfollow_button_text));
                 } else {
                     Toast.makeText(context,
-                            String.format("Stopped following %s.", user.getUserName()),
+                            String.format("Stopped following %s.", user.getName()),
                             Toast.LENGTH_SHORT).show();
                     userFollowButton.setText(getResources().getString(R.string.follow_me_button_text));
                 }
@@ -102,7 +102,7 @@ public class PublicProfileFragment extends Fragment {
 
         TextView userName = new TextView(context);
         userName.setTextColor(Color.BLACK);
-        userName.setText(follower.getUserName());
+        userName.setText(follower.getName());
         followerLayout.addView(userName,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 

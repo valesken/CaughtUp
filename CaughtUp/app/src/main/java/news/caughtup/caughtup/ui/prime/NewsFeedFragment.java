@@ -8,9 +8,10 @@ import java.util.ArrayList;
 
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.Article;
+import news.caughtup.caughtup.entities.ICaughtUpItem;
 
 public class NewsFeedFragment extends ListFragment {
-    private ArrayList<Article> dataArray = new ArrayList<>();
+    private ArrayList<ICaughtUpItem> dataArray = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -18,7 +19,7 @@ public class NewsFeedFragment extends ListFragment {
         /* For demonstration only! */
         populateDataArray();
 
-        setListAdapter(new NewsFeedAdapter(dataArray, getActivity()));
+        setListAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
     }
 
     private void populateDataArray() {

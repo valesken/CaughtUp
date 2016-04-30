@@ -19,7 +19,7 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.User;
-import news.caughtup.caughtup.entities.UserList;
+import news.caughtup.caughtup.entities.Users;
 
 public class HomeActivity extends AppCompatActivity {
     private static FragmentManager fm;
@@ -97,6 +97,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setUpTestUsers() {
+        Users users = Users.getInstance();
         User user1 = new User("bjonesy");
         user1.setProfileImageId(R.mipmap.profile_pic_1);
         user1.setFullName("Bob Jones");
@@ -104,7 +105,7 @@ public class HomeActivity extends AppCompatActivity {
         user1.setAge(28);
         user1.setLocation("San Mateo, CA");
         user1.setAboutMe("I'm kind of an awesome guy.");
-        UserList.addToUserList(user1);
+        users.addToUserList(user1);
         User user2 = new User("whatagal");
         user2.setProfileImageId(R.mipmap.profile_pic_2);
         user2.setFullName("Sarah Doe");
@@ -112,7 +113,7 @@ public class HomeActivity extends AppCompatActivity {
         user2.setAge(24);
         user2.setLocation("Mountain View, CA");
         user2.setAboutMe("Who am I? Who are you? Why are you asking so many questions?");
-        UserList.addToUserList(user2);
+        users.addToUserList(user2);
         user1.addFollower(user2);
     }
 

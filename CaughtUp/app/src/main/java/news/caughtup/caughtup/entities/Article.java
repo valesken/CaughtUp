@@ -3,7 +3,7 @@ package news.caughtup.caughtup.entities;
 import android.net.Uri;
 
 
-public class Article {
+public class Article implements ICaughtUpItem {
     private String title;
     private String date;
     private int thumbnailID;

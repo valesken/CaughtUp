@@ -8,11 +8,10 @@ import java.util.List;
  *
  * Temporary model used for prototyping.
  */
-public class User {
+public class User extends Resource implements ICaughtUpItem {
 
     // Private instance variables
     private int profileImageId;
-    private String userName;
     private String fullName;
     private int age;
     private char gender;
@@ -22,17 +21,13 @@ public class User {
 
     // Constructor
     public User(String userName) {
-        this.userName = userName;
+        super(userName);
         followers = new LinkedList<>();
     }
 
     // Setters
     public void setProfileImageId(int profileImageId) {
         this.profileImageId = profileImageId;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public void setFullName(String fullName) {
@@ -62,10 +57,6 @@ public class User {
     // Getters
     public int getProfileImageId() {
         return profileImageId;
-    }
-
-    public String getUserName() {
-        return userName;
     }
 
     public String getFullName() {

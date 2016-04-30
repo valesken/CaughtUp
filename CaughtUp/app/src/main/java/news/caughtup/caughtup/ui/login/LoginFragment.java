@@ -44,29 +44,45 @@ public class LoginFragment extends Fragment {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Callback callback = new Callback() {
-                    @Override
-                    public void process(ResponseObject responseObject) {
-                        if (responseObject.getResponseCode() == 200 ) {
-                            JSONObject jsonObject = (JSONObject) responseObject.getJsonObject();
-                            try {
-                                Log.d("Username", jsonObject.get("username").toString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+
+                // Ignore click if userName and/or password if empty
+                String userNameString = userName.getText().toString();
+                String passwordString = password.getText().toString();
+                if(!userNameString.isEmpty() && !passwordString.isEmpty()) {
+
+                    // Setup callback for when login call is finished
+                    Callback callback = new Callback() {
+                        @Override
+                        public void process(ResponseObject responseObject) {
+                            if (responseObject.getResponseCode() == 200) {
+                                JSONObject jsonObject = (JSONObject) responseObject.getJsonObject();
+                                try {
+                                    String responseUserName = jsonObject.getString("username");
+                                    if(responseUserName == null || responseUserName.isEmpty())
+                                        Log.d("Username", "Cannot be found");
+                                    else
+                                        Log.d("Username", jsonObject.get("username").toString());
+                                } catch (JSONException ignored) {
+                                    Log.e("JSONException", "Couldn't read returned JSON");
+                                } catch (NullPointerException ignored) {
+                                    Log.e("NullPointerException", "No JSON Object in response");
+                                }
+                                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                                startActivity(intent);
                             }
-                            Intent intent = new Intent(getActivity(), HomeActivity.class);
-                            startActivity(intent);
                         }
+                    };
+
+                    // Make login call
+                    RestProxy proxy = RestProxy.getProxy();
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("password", passwordString);
+                    } catch (JSONException e) {
+                        Log.e("LoginFragment", "Error trying to create JSON object");
                     }
-                };
-                RestProxy proxy = RestProxy.getProxy();
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("password", password.getText().toString());
-                } catch (JSONException e) {
-                    Log.e("LoginFragment", "Error trying to create JSON object");
+                    proxy.postCall("/login/dimitris", jsonObject.toString(), callback);
                 }
-                proxy.postCall("/login/dimitris", jsonObject.toString(), callback);
             }
         });
 
