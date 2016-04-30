@@ -24,6 +24,8 @@ import news.caughtup.caughtup.entities.ICaughtUpItem;
 import news.caughtup.caughtup.entities.NewsSource;
 import news.caughtup.caughtup.entities.Resource;
 import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.util.Constants;
+import news.caughtup.caughtup.util.StringRetriever;
 import news.caughtup.caughtup.ws.remote.FacebookManager;
 import news.caughtup.caughtup.ws.remote.ISocialMediaManager;
 import news.caughtup.caughtup.ws.remote.TwitterManager;
@@ -31,9 +33,11 @@ import news.caughtup.caughtup.ws.remote.TwitterManager;
 public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
 
     private Activity activity;
+    private StringRetriever retriever;
     public CaughtUpTileAdapter(List<ICaughtUpItem> dataArray, Activity activity) {
         super(activity, android.R.layout.simple_list_item_1, dataArray);
         this.activity = activity;
+        retriever = StringRetriever.getInstance();
     }
 
     @Override
@@ -72,7 +76,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         ImageView thumbnailImageView = (ImageView) convertView.findViewById(R.id.thumbnail_tile_view);
         thumbnailImageView.setImageDrawable(activity.getResources().getDrawable(article.getThumbnailID(), null));
 
-        // Load article in browswer when tile is touched
+        // Load article in browser when tile is touched
         convertView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -136,6 +140,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         ImageButton followButton = (ImageButton) convertView.findViewById(R.id.button_tile_view);
         //TODO: Detect if already following and set the image accordingly
         followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
+        followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG));
         setFollowButtonListener(followButton, user);
 
         return convertView;
@@ -225,8 +230,8 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String followTag = activity.getResources().getString(R.string.follow_tag);
-                String unfollowTag = activity.getResources().getString(R.string.unfollow_tag);
+                String followTag = retriever.getStringById(Constants.FOLLOW_TAG);
+                String unfollowTag = retriever.getStringById(Constants.UNFOLLOW_TAG);
                 if (followButton.getTag().equals(followTag)) {
                     Toast.makeText(activity.getApplicationContext(),
                             String.format("Now following %s!", resource.getName()),

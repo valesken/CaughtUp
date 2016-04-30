@@ -43,10 +43,7 @@ public class RegisterFragment extends Fragment {
     }
 
     public void registerButtonClicked() {
-        // Get userName and Password
         RegistrationUser newUser = getRegistrationUser();
-
-        // Ignore click if userName and/or password if empty
         if(!newUser.confirmName()) {
             Toast.makeText(getActivity().getApplicationContext(),
                     getResources().getString(R.string.empty_user_name),

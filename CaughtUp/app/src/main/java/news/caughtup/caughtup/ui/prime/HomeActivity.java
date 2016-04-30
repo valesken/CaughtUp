@@ -20,6 +20,8 @@ import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.Users;
+import news.caughtup.caughtup.util.Constants;
+import news.caughtup.caughtup.util.StringRetriever;
 
 public class HomeActivity extends AppCompatActivity {
     private static FragmentManager fm;
@@ -28,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        StringRetriever.initializeStringRetriever(getResources(), Constants.IS_LOCAL);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());

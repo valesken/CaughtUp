@@ -9,8 +9,11 @@ import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
+import news.caughtup.caughtup.util.Constants;
+import news.caughtup.caughtup.util.StringRetriever;
 
 public class LoginActivity extends AppCompatActivity {
+
     private static FragmentManager fm;
 
     @Override
@@ -19,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Fabric.with(this, new Crashlytics());
         fm = getFragmentManager();
+        StringRetriever.initializeStringRetriever(getResources(), Constants.IS_LOCAL);
 
         LoginFragment loginFragment = new LoginFragment();
         executeTransaction(loginFragment, "login");

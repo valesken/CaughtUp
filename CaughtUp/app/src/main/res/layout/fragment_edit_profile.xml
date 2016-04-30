@@ -42,7 +42,6 @@
         android:id="@+id/edit_profile_personal_info_linear_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_profile_picture_relative_layout"
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal">
 
