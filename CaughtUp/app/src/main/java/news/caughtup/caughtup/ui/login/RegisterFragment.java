@@ -84,6 +84,7 @@ public class RegisterFragment extends Fragment {
                         String responseUserName = jsonObject.getString("username");
                         if(responseUserName != null && !responseUserName.isEmpty()) {
                             Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            intent.putExtra("user", jsonObject.toString());
                             startActivity(intent);
                             getActivity().finish(); // Don't stack this activity behind the home activity
                         }
