@@ -77,12 +77,11 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         thumbnailImageView.setImageDrawable(activity.getResources().getDrawable(article.getThumbnailID(), null));
 
         // Load article in browser when tile is touched
-        convertView.setOnTouchListener(new View.OnTouchListener() {
+        convertView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 Intent launchBrowser = new Intent(Intent.ACTION_VIEW, article.getArticleURI());
                 activity.startActivity(launchBrowser);
-                return false;
             }
         });
 
@@ -124,15 +123,14 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         thumbnail.setImageDrawable(activity.getResources().getDrawable(user.getProfileImageId(), null));
 
         // Set onTouchListener to load User's public profile on touch
-        convertView.setOnTouchListener(new View.OnTouchListener() {
+        convertView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 PublicProfileFragment publicProfile = new PublicProfileFragment();
                 Bundle args = new Bundle();
                 args.putString("user", user.getName());
                 publicProfile.setArguments(args);
                 HomeActivity.executeTransaction(publicProfile, user.getName(), user.getName());
-                return false;
             }
         });
 
@@ -171,12 +169,11 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         // Set onTouchListener to load NewsSource's site
         final Uri externalLink = newsSource.getBaseUrl();
         if(externalLink != null) {
-            convertView.setOnTouchListener(new View.OnTouchListener() {
+            convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
+                public void onClick(View v) {
                     Intent launchBrowser = new Intent(Intent.ACTION_VIEW, externalLink);
                     activity.startActivity(launchBrowser);
-                    return false;
                 }
             });
         }
