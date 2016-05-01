@@ -261,8 +261,7 @@ public class HomeActivity extends AppCompatActivity {
         try {
             Intent intent = getIntent();
             JSONObject jsonObject = new JSONObject(intent.getStringExtra("user"));
-            String username = jsonObject.getString("username");
-            currentUser = new User(username);
+            currentUser = new User(jsonObject);
         } catch (JSONException ignored) {
             Log.e("JSONException", "Response was not properly formatted. Returning to Login Activity.");
             Intent returnIntent = new Intent(this, LoginActivity.class);

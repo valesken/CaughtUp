@@ -24,6 +24,11 @@
     <string name="follow_me_button_text">Follow Me!</string>
     <string name="unfollow_button_text">Unfollow</string>
     <string name="base_search_results_text">Search results for</string>
+    <string name="edit_profile_location_hint">Location</string>
+    <string name="edit_profile_fullname_hint">Full Name</string>
+    <string name="edit_profile_age_hint">Age</string>
+    <string name="edit_profile_gender_hint">Gender</string>
+    <string name="edit_profile_about_me_hint">About me</string>
 
     <!-- Strings for test data -->
     <string name="test_techcrunch_url">http://techcrunch.com/2016/04/04/saleforce-acquires-metamind/</string>
@@ -47,4 +52,10 @@
     <string name="empty_user_name">Username field must not be empty.</string>
     <string name="empty_password">Password must not be empty.</string>
     <string name="register_password_error">Both password fields must match and not be empty.</string>
+
+    <!-- Strings used for search context -->
+    <string name="search_context_all_text">all</string>
+    <string name="search_context_user_text">user</string>
+    <string name="search_context_article_text">article</string>
+    <string name="search_context_news_source_text">news source</string>
 </resources>

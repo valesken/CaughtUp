@@ -1,5 +1,8 @@
 package news.caughtup.caughtup.entities;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,6 +15,8 @@ public class User extends Resource implements ICaughtUpItem {
 
     // Private instance variables
     private int profileImageId;
+    private int userId;
+    private int resourceId;
     private String fullName;
     private int age;
     private char gender;
@@ -24,6 +29,57 @@ public class User extends Resource implements ICaughtUpItem {
     public User(String userName) {
         super(userName);
         followers = new LinkedList<>();
+    }
+
+    public User(JSONObject jsonObject) throws JSONException {
+        // Username, UserId, and ResourceId must always be provided
+        super(jsonObject.getString("username"));
+        userId = jsonObject.getInt("userId");
+        resourceId = jsonObject.getInt("resourceId");
+
+        followers = new LinkedList<>();
+
+        // Full Name
+        try {
+            fullName = jsonObject.getString("fullName");
+        } catch (JSONException ignored) {
+            fullName = "";
+        }
+
+        // Gender
+        try {
+            gender = jsonObject.getString("gender").charAt(0);
+        } catch (JSONException ignored) {
+            gender = 'x';
+        }
+
+        // Location
+        try {
+            location = jsonObject.getString("location");
+        } catch (JSONException ignored) {
+            location = "";
+        }
+
+        // Age
+        try {
+            age = jsonObject.getInt("age");
+        } catch (JSONException ignored) {
+            age = -1;
+        }
+
+        // About Me
+        try {
+            aboutMe = jsonObject.getString("aboutMe");
+        } catch (JSONException ignored) {
+            aboutMe = "";
+        }
+
+        // Email
+        try {
+            email = jsonObject.getString("email");
+        } catch (JSONException ignored) {
+            email = "";
+        }
     }
 
     // Setters
@@ -62,6 +118,14 @@ public class User extends Resource implements ICaughtUpItem {
     // Getters
     public int getProfileImageId() {
         return profileImageId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getResourceId() {
+        return resourceId;
     }
 
     public String getFullName() {

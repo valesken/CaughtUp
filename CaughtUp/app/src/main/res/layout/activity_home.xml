@@ -25,7 +25,7 @@
             android:background="@drawable/search_context_normal"
             android:gravity="center"
             android:textSize="15sp"
-            android:text="all"
+            android:text="@string/search_context_all_text"
             android:textIsSelectable="true"/>
 
         <TextView
@@ -38,7 +38,7 @@
             android:background="@drawable/search_context_normal"
             android:gravity="center"
             android:textSize="15sp"
-            android:text="users"
+            android:text="@string/search_context_user_text"
             android:textIsSelectable="true"/>
 
         <TextView
@@ -51,7 +51,7 @@
             android:background="@drawable/search_context_normal"
             android:gravity="center"
             android:textSize="15sp"
-            android:text="articles"
+            android:text="@string/search_context_article_text"
             android:textIsSelectable="true"/>
 
         <TextView
@@ -64,7 +64,7 @@
             android:background="@drawable/search_context_normal"
             android:gravity="center"
             android:textSize="15sp"
-            android:text="news sources"
+            android:text="@string/search_context_news_source_text"
             android:textIsSelectable="true"/>
 
     </LinearLayout>
