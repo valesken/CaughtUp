@@ -1,9 +1,13 @@
 package news.caughtup.caughtup.ui.prime;
 
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,25 +20,47 @@ import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.Users;
 import news.caughtup.caughtup.util.StringRetriever;
 
-public class SearchFragment extends ListFragment {
+public class SearchFragment extends Fragment {
 
+    private View rootView;
+    private StringRetriever retriever;
     private List<ICaughtUpItem> dataArray = new ArrayList<>();
     private String query;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_search, container, false);
         Bundle args = getArguments();
         query = args.getString("query");
+        retriever = StringRetriever.getInstance();
 
         /* For demonstration only! */
         addTestItems();
 
-        setListAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
+        // Set up Results String
+        setResultsString();
+
+        // Set up Results
+        ListView searchList = (ListView) rootView.findViewById(R.id.search_list);
+        searchList.setAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
+
+        return rootView;
     }
 
     public void setQuery(String query) {
         this.query = query;
+        setResultsString();
+    }
+
+    private void setResultsString() {
+        TextView searchResultsText = (TextView) rootView.findViewById(R.id.search_results_text);
+        StringBuilder builder = new StringBuilder(retriever.getStringById(R.string.base_search_results_text));
+        builder.append(" \"");
+        builder.append(query);
+        builder.append("\" (");
+        builder.append(HomeActivity.getCurrentSearchContext().getText().toString());
+        builder.append(")");
+        searchResultsText.setText(builder.toString());
     }
 
     private void addTestItems() {

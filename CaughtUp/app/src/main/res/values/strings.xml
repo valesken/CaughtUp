@@ -23,6 +23,7 @@
     <string name="cancel_button_text">Cancel</string>
     <string name="follow_me_button_text">Follow Me!</string>
     <string name="unfollow_button_text">Unfollow</string>
+    <string name="base_search_results_text">Search results for</string>
 
     <!-- Strings for test data -->
     <string name="test_techcrunch_url">http://techcrunch.com/2016/04/04/saleforce-acquires-metamind/</string>
