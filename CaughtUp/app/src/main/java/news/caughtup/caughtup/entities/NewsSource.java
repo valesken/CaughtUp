@@ -2,13 +2,19 @@ package news.caughtup.caughtup.entities;
 
 import android.net.Uri;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import news.caughtup.caughtup.R;
+
 public class NewsSource extends Resource implements ICaughtUpItem {
 
+    private int resourceId;
     private String baseUrl;
     private String description;
-    private int thumbnailId;
+    private int thumbnailId = R.mipmap.bbc_icon; // TODO: Get actual corresponding icon
 
-    // Constructor
+    //region Constructors
     public NewsSource(String name, String baseUrl, int thumbnailId, String description) {
         super(name);
         this.baseUrl = baseUrl;
@@ -16,7 +22,15 @@ public class NewsSource extends Resource implements ICaughtUpItem {
         this.description = description;
     }
 
-    // Setters
+    public NewsSource(JSONObject jsonObject) throws JSONException {
+        super(jsonObject.getString("name"));
+        resourceId = jsonObject.getInt("resourceId");
+        baseUrl = jsonObject.getString("baseURL");
+        description = jsonObject.getString("description");
+    }
+    //endregion
+
+    //region Setters
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
     }
@@ -28,8 +42,13 @@ public class NewsSource extends Resource implements ICaughtUpItem {
     public void setDescription(String description) {
         this.description = description;
     }
+    //endregion
 
-    // Getters
+    //region Getters
+    public int getResourceId() {
+        return resourceId;
+    }
+
     public Uri getBaseUrl() {
         return Uri.parse(baseUrl);
     }
@@ -41,4 +60,5 @@ public class NewsSource extends Resource implements ICaughtUpItem {
     public String getDescription() {
         return description;
     }
+    //endregion
 }

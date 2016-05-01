@@ -1,6 +1,5 @@
 package news.caughtup.caughtup.ui.prime;
 
-import android.animation.LayoutTransition;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -45,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
     private static FragmentManager fm;
     private static Toolbar myToolbar;
     private static Stack<String> myToolbarTitles;
-    private static Fragment currentFragment;
+    private static Stack<Fragment> fragmentStack;
     private static User currentUser;
     private static List<TextView> searchContexts;
     private static TextView currentSearchContext;
@@ -56,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public static void executeTransaction(Fragment fragment, String tag, String title) {
-        currentFragment = fragment;
+        fragmentStack.push(fragment);
         setToolbarTitle(title);
         fm.beginTransaction()
                 .replace(R.id.home_main_container, fragment)
@@ -121,16 +120,14 @@ public class HomeActivity extends AppCompatActivity {
         TextView newsSourcesTextView = (TextView) findViewById(R.id.search_context_news);
         setUpSearchContext(newsSourcesTextView);
 
-        // Add new fragment
+        // Add first fragment
+        fragmentStack = new Stack<>();
         fm = getFragmentManager();
         NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
         executeTransaction(newsFeedFragment, "newsfeed", R.string.news_feed_title);
 
         // Get current user
         setUpCurrentUser();
-
-        // FOR TESTING ONLY
-        setUpTestUsers();
     }
 
     @Override
@@ -184,7 +181,7 @@ public class HomeActivity extends AppCompatActivity {
                     // Launch new Fragment
                     executeTransaction(sf, "search", R.string.search_title);
                 } else {
-                    ((SearchFragment) currentFragment).setQuery(query);
+                    ((SearchFragment) fragmentStack.peek()).makeQuery(query);
                 }
                 return true;
             }
@@ -217,6 +214,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (fm.getBackStackEntryCount() > 1) {
             fm.popBackStack();
+            fragmentStack.pop();
             if(myToolbarTitles.size() > 1) { // Safety check - better to show wrong title than crash the app
                 myToolbarTitles.pop();
                 String next = myToolbarTitles.pop();
@@ -268,27 +266,6 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(returnIntent);
             finish(); // Don't stack this activity behind the login activity
         }
-    }
-
-    private void setUpTestUsers() {
-        Users users = Users.getInstance();
-        User user1 = new User("bjonesy");
-        user1.setProfileImageId(R.mipmap.profile_pic_1);
-        user1.setFullName("Bob Jones");
-        user1.setGender('M');
-        user1.setAge(28);
-        user1.setLocation("San Mateo, CA");
-        user1.setAboutMe("I'm kind of an awesome guy.");
-        users.addToUserList(user1);
-        User user2 = new User("whatagal");
-        user2.setProfileImageId(R.mipmap.profile_pic_2);
-        user2.setFullName("Sarah Doe");
-        user2.setGender('F');
-        user2.setAge(24);
-        user2.setLocation("Mountain View, CA");
-        user2.setAboutMe("Who am I? Who are you? Why are you asking so many questions?");
-        users.addToUserList(user2);
-        user1.addFollower(user2);
     }
     //endregion
 }

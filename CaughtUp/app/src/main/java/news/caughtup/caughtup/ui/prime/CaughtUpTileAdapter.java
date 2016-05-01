@@ -182,6 +182,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         ImageButton followButton = (ImageButton) convertView.findViewById(R.id.button_tile_view);
         //TODO: Detect if already following and set the image accordingly
         followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
+        followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG));
         setFollowButtonListener(followButton, newsSource);
 
         return convertView;

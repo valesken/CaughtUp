@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 
+import news.caughtup.caughtup.R;
+
 /**
  * Created by jeff on 4/3/16.
  *
@@ -14,7 +16,7 @@ import java.util.List;
 public class User extends Resource implements ICaughtUpItem {
 
     // Private instance variables
-    private int profileImageId;
+    private int profileImageId = R.mipmap.profile_pic_1;
     private int userId;
     private int resourceId;
     private String fullName;
