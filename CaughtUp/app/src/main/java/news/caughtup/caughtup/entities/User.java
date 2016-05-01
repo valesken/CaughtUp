@@ -15,10 +15,9 @@ import news.caughtup.caughtup.R;
  */
 public class User extends Resource implements ICaughtUpItem {
 
-    // Private instance variables
+    //region Private instance variables
     private int profileImageId = R.mipmap.profile_pic_1;
     private int userId;
-    private int resourceId;
     private String fullName;
     private int age;
     private char gender;
@@ -26,8 +25,9 @@ public class User extends Resource implements ICaughtUpItem {
     private String aboutMe;
     private String email;
     private List<User> followers;
+    //endregion
 
-    // Constructor
+    //region Constructors
     public User(String userName) {
         super(userName);
         followers = new LinkedList<>();
@@ -36,8 +36,8 @@ public class User extends Resource implements ICaughtUpItem {
     public User(JSONObject jsonObject) throws JSONException {
         // Username, UserId, and ResourceId must always be provided
         super(jsonObject.getString("username"));
+        setResourceId(jsonObject.getInt("resourceId"));
         userId = jsonObject.getInt("userId");
-        resourceId = jsonObject.getInt("resourceId");
 
         followers = new LinkedList<>();
 
@@ -83,8 +83,9 @@ public class User extends Resource implements ICaughtUpItem {
             email = "";
         }
     }
+    //endregion
 
-    // Setters
+    //region Setters
     public void setProfileImageId(int profileImageId) {
         this.profileImageId = profileImageId;
     }
@@ -116,18 +117,15 @@ public class User extends Resource implements ICaughtUpItem {
     public void addFollower(User user) {
         followers.add(user);
     }
+    //endregion
 
-    // Getters
+    //region Getters
     public int getProfileImageId() {
         return profileImageId;
     }
 
     public int getUserId() {
         return userId;
-    }
-
-    public int getResourceId() {
-        return resourceId;
     }
 
     public String getFullName() {
@@ -157,4 +155,5 @@ public class User extends Resource implements ICaughtUpItem {
     public List<User> getFollowers() {
         return followers;
     }
+    //endregion
 }

@@ -9,7 +9,6 @@ import news.caughtup.caughtup.R;
 
 public class NewsSource extends Resource implements ICaughtUpItem {
 
-    private int resourceId;
     private String baseUrl;
     private String description;
     private int thumbnailId = R.mipmap.bbc_icon; // TODO: Get actual corresponding icon
@@ -24,7 +23,7 @@ public class NewsSource extends Resource implements ICaughtUpItem {
 
     public NewsSource(JSONObject jsonObject) throws JSONException {
         super(jsonObject.getString("name"));
-        resourceId = jsonObject.getInt("resourceId");
+        setResourceId(jsonObject.getInt("resourceId"));
         baseUrl = jsonObject.getString("baseURL");
         description = jsonObject.getString("description");
     }
@@ -45,10 +44,6 @@ public class NewsSource extends Resource implements ICaughtUpItem {
     //endregion
 
     //region Getters
-    public int getResourceId() {
-        return resourceId;
-    }
-
     public Uri getBaseUrl() {
         return Uri.parse(baseUrl);
     }
