@@ -18,9 +18,8 @@
 
             <ImageView
                 android:id="@+id/edit_profile_photo_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/male_user_icon"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"/>
 
             <LinearLayout

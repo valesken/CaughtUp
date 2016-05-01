@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -55,9 +56,19 @@ public class EditProfileFragment extends Fragment {
 
     private void setUpCurrentUserInfo() {
         User user = HomeActivity.getCurrentUser();
+        // Profile Picture
+        ImageView profileImageView = (ImageView) rootView.findViewById(R.id.edit_profile_photo_image_view);
+        int imageResourceId = user.getProfileImageId();
+        if(imageResourceId > 0) {
+            profileImageView.setImageDrawable(getActivity().getResources().getDrawable(imageResourceId, null));
+        } else {
+            profileImageView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
+        }
+
         // Username
         TextView userNameView = (TextView) rootView.findViewById(R.id.edit_profile_username_text_view);
         userNameView.setText(user.getName());
+
         // Gender
         EditText genderView = (EditText) rootView.findViewById(R.id.edit_profile_gender_edit_text);
         char gender = user.getGender();
