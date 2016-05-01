@@ -3,8 +3,10 @@ package news.caughtup.caughtup.entities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import news.caughtup.caughtup.R;
 
@@ -25,14 +27,14 @@ public class User extends Resource implements ICaughtUpItem {
     private String aboutMe;
     private String email;
     private List<User> followers;
-    private List<Resource> following;
+    private Map<Integer, Resource> followingMap;
     //endregion
 
     //region Constructors
     public User(String userName) {
         super(userName);
         followers = new LinkedList<>();
-        following = new LinkedList<>();
+        followingMap = new HashMap<>();
     }
 
     public User(JSONObject jsonObject) throws JSONException {
@@ -42,7 +44,7 @@ public class User extends Resource implements ICaughtUpItem {
         userId = jsonObject.getInt("userId");
 
         followers = new LinkedList<>();
-        following = new LinkedList<>();
+        followingMap = new HashMap<>();
 
         // Full Name
         try {
@@ -122,11 +124,11 @@ public class User extends Resource implements ICaughtUpItem {
     }
 
     public void clearFollowing() {
-        following.clear();
+        followingMap.clear();
     }
 
     public void addFollowing(Resource resource) {
-        following.add(resource);
+        followingMap.put(resource.getResourceId(), resource);
     }
     //endregion
 
@@ -168,7 +170,11 @@ public class User extends Resource implements ICaughtUpItem {
     }
 
     public List<Resource> getFollowing() {
-        return following;
+        return new LinkedList<>(followingMap.values());
+    }
+
+    public boolean isFollowing(int resourceId) {
+        return followingMap.containsKey(resourceId);
     }
     //endregion
 }

@@ -136,9 +136,14 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
 
         // Set up follow button
         ImageButton followButton = (ImageButton) convertView.findViewById(R.id.button_tile_view);
-        //TODO: Detect if already following and set the image accordingly
-        followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
-        followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG));
+        User currentUser = HomeActivity.getCurrentUser();
+        if(currentUser.isFollowing(user.getResourceId())) {
+            followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.unfollow_icon, null));
+            followButton.setTag(retriever.getStringById(Constants.UNFOLLOW_TAG));
+        } else {
+            followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
+            followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG));
+        }
         setFollowButtonListener(followButton, user);
 
         return convertView;
@@ -180,9 +185,14 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
 
         // Set up follow button
         ImageButton followButton = (ImageButton) convertView.findViewById(R.id.button_tile_view);
-        //TODO: Detect if already following and set the image accordingly
-        followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
-        followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG));
+        User currentUser = HomeActivity.getCurrentUser();
+        if(currentUser.isFollowing(newsSource.getResourceId())) {
+            followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.unfollow_icon, null));
+            followButton.setTag(retriever.getStringById(Constants.UNFOLLOW_TAG));
+        } else {
+            followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
+            followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG));
+        }
         setFollowButtonListener(followButton, newsSource);
 
         return convertView;
