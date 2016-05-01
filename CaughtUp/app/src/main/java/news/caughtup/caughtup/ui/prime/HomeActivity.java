@@ -2,7 +2,6 @@ package news.caughtup.caughtup.ui.prime;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
@@ -26,6 +26,8 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import io.fabric.sdk.android.Fabric;
@@ -43,6 +45,8 @@ public class HomeActivity extends AppCompatActivity {
     private static Stack<String> myToolbarTitles;
     private static Fragment currentFragment;
     private static User currentUser;
+    private static List<TextView> searchContexts;
+    private static TextView currentSearchContext;
 
     //region public static methods
     public static void executeTransaction(Fragment fragment, String tag, int title_id) {
@@ -100,6 +104,21 @@ public class HomeActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
+        // Set up search context bar
+        searchContexts = new ArrayList<>();
+        TextView allTextView = (TextView) findViewById(R.id.search_context_all);
+        if (allTextView != null) {
+            allTextView.setBackground(getDrawable(R.drawable.search_context_selected));
+            currentSearchContext = allTextView;
+        }
+        setUpSearchContext(allTextView);
+        TextView usersTextView = (TextView) findViewById(R.id.search_context_users);
+        setUpSearchContext(usersTextView);
+        TextView articlesTextView = (TextView) findViewById(R.id.search_context_articles);
+        setUpSearchContext(articlesTextView);
+        TextView newsSourcesTextView = (TextView) findViewById(R.id.search_context_news);
+        setUpSearchContext(newsSourcesTextView);
+
         // Add new fragment
         fm = getFragmentManager();
         NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
@@ -120,12 +139,14 @@ public class HomeActivity extends AppCompatActivity {
 
         //region search icon
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search_icon));
+        final LinearLayout searchContextBar = (LinearLayout) findViewById(R.id.home_search_context_bar);
 
         // Detect when Search Icon clicked
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 titleTextView.setVisibility(View.GONE);
+                searchContextBar.setVisibility(View.VISIBLE);
             }
         });
 
@@ -134,6 +155,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onClose() {
                 titleTextView.setVisibility(View.VISIBLE);
+                searchContextBar.setVisibility(View.GONE);
                 return false;
             }
         });
@@ -202,12 +224,34 @@ public class HomeActivity extends AppCompatActivity {
     //endregion
 
     //region public accessors
-    public User getCurrentUser() {
+    public static User getCurrentUser() {
         return currentUser;
+    }
+
+    public static TextView getCurrentSearchContext() {
+        return currentSearchContext;
     }
     //endregion
 
     //region private helper methods
+    private void setUpSearchContext(final TextView searchContext) {
+        searchContexts.add(searchContext);
+        searchContext.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                currentSearchContext = searchContext;
+                for (TextView textView : searchContexts) {
+                    if(textView.equals(searchContext)) {
+                        textView.setBackground(getDrawable(R.drawable.search_context_selected));
+                    } else {
+                        textView.setBackground(getDrawable(R.drawable.search_context_normal));
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
     private void setUpCurrentUser() {
         try {
             Intent intent = getIntent();
