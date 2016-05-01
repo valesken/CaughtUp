@@ -59,4 +59,6 @@
     <string name="search_context_article_text">article</string>
     <string name="search_context_news_source_text">news source</string>
     <string name="search_server_error">Could not process your search query. Please try again.</string>
+    <string name="news_feed_following_server_error">Cannot get the resources you follow.</string>
+    <string name="news_feed_article_server_error">Error occured while fetching articles from resources you follow.</string>
 </resources>
