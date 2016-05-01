@@ -28,7 +28,6 @@ import news.caughtup.caughtup.ws.remote.RestProxy;
 public class NewsFeedFragment extends ListFragment {
 
     private ArrayList<ICaughtUpItem> dataArray = new ArrayList<>();
-    private ArrayList<Resource> followingArray = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,8 +37,6 @@ public class NewsFeedFragment extends ListFragment {
         Callback callback = getFollowingCallback();
         RestProxy proxy = RestProxy.getProxy();
         proxy.getCall(String.format("/follow?user_id=%d&type=all", currentUser.getUserId()), "", callback);
-
-        setListAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
     }
 
     private Callback getFollowingCallback() {
@@ -49,7 +46,8 @@ public class NewsFeedFragment extends ListFragment {
                 if (responseObject.getResponseCode() == 200) {
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
-                        followingArray.clear();
+                        User currentUser = HomeActivity.getCurrentUser();
+                        currentUser.clearFollowing();
                         // Users
                         if(jsonObject.has("users") && jsonObject.get("users") != null) {
                             JSONArray userArray = jsonObject.getJSONArray("users");
@@ -57,7 +55,7 @@ public class NewsFeedFragment extends ListFragment {
                                 JSONObject jsonUser = userArray.getJSONObject(i);
                                 User user = new User(jsonUser);
                                 Users.getInstance().addToUserList(user);
-                                followingArray.add(user);
+                                currentUser.addFollowing(user);
                             }
                         }
                         // News Sources
@@ -66,13 +64,15 @@ public class NewsFeedFragment extends ListFragment {
                             for(int i = 0; i < newsSourceArray.length(); ++i) {
                                 JSONObject jsonNewsSource = newsSourceArray.getJSONObject(i);
                                 NewsSource newsSource = new NewsSource(jsonNewsSource);
-                                followingArray.add(newsSource);
+                                currentUser.addFollowing(newsSource);
                             }
                         }
 
-                        // For Testing
-                        for(Resource resource : followingArray) {
-                            Log.e("Following Array item", resource.getName());
+                        dataArray.clear();
+                        for(Resource resource : currentUser.getFollowing()) {
+                            Callback callback = getArticlesCallback();
+                            RestProxy proxy = RestProxy.getProxy();
+                            proxy.getCall(String.format("/articles?source=%s", resource.getName()), "", callback);
                         }
                     } catch (JSONException ignored) {
                         Log.e("JSONException", "Couldn't read returned JSON");
@@ -88,34 +88,31 @@ public class NewsFeedFragment extends ListFragment {
         };
     }
 
-    // For demonstration only
-    private void populateDataArray() {
-        dataArray.add(new Article("Article Title 1", "11/2",
-                R.mipmap.techcrunch_icon, "Summary of the news for article 1.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 2", "11/2", R.mipmap.bbc_icon, "Summary of the news for article 2.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 3", "11/2", R.mipmap.techcrunch_icon, "Summary of the news for article 3.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 4", "11/2", R.mipmap.bbc_icon, "Summary of the news for article 4.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 1", "11/2",
-                R.mipmap.techcrunch_icon, "Summary of the news for article 1.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 2", "11/2", R.mipmap.bbc_icon, "Summary of the news for article 2.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 3", "11/2", R.mipmap.techcrunch_icon, "Summary of the news for article 3.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 4", "11/2", R.mipmap.bbc_icon, "Summary of the news for article 4.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 1", "11/2",
-                R.mipmap.techcrunch_icon, "Summary of the news for article 1.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 2", "11/2", R.mipmap.bbc_icon, "Summary of the news for article 2.",
-                Uri.parse("http://www.google.com")));
-        dataArray.add(new Article("Article Title 3", "11/2", R.mipmap.techcrunch_icon, "Summary of the news for article 3.",
-                Uri.parse("http://www.bbc.com/")));
-        dataArray.add(new Article("Article Title 4", "11/2", R.mipmap.bbc_icon, "Summary of the news for article 4.",
-                Uri.parse("http://www.bbc.com/")));
+    private Callback getArticlesCallback() {
+        return new Callback() {
+            @Override
+            public void process(ResponseObject responseObject) {
+                if (responseObject.getResponseCode() == 200) {
+                    JSONObject jsonObject = responseObject.getJsonObject();
+                    try {
+                        JSONArray articlesArray = jsonObject.getJSONArray("articles");
+                        for(int i = 0; i < articlesArray.length(); ++i) {
+                            Article article = new Article(articlesArray.getJSONObject(i));
+                            dataArray.add(article);
+                            setListAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
+                        }
+                    } catch (JSONException ignored) {
+                        Log.e("JSONException", "Couldn't read returned JSON");
+                    } catch (NullPointerException ignored) {
+                        Log.e("NullPointerException", "No JSON Object in response");
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getResources().getString(R.string.news_feed_article_server_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        };
     }
+
 }

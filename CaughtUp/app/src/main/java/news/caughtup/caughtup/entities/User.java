@@ -25,12 +25,14 @@ public class User extends Resource implements ICaughtUpItem {
     private String aboutMe;
     private String email;
     private List<User> followers;
+    private List<Resource> following;
     //endregion
 
     //region Constructors
     public User(String userName) {
         super(userName);
         followers = new LinkedList<>();
+        following = new LinkedList<>();
     }
 
     public User(JSONObject jsonObject) throws JSONException {
@@ -40,6 +42,7 @@ public class User extends Resource implements ICaughtUpItem {
         userId = jsonObject.getInt("userId");
 
         followers = new LinkedList<>();
+        following = new LinkedList<>();
 
         // Full Name
         try {
@@ -117,6 +120,14 @@ public class User extends Resource implements ICaughtUpItem {
     public void addFollower(User user) {
         followers.add(user);
     }
+
+    public void clearFollowing() {
+        following.clear();
+    }
+
+    public void addFollowing(Resource resource) {
+        following.add(resource);
+    }
     //endregion
 
     //region Getters
@@ -154,6 +165,10 @@ public class User extends Resource implements ICaughtUpItem {
 
     public List<User> getFollowers() {
         return followers;
+    }
+
+    public List<Resource> getFollowing() {
+        return following;
     }
     //endregion
 }
