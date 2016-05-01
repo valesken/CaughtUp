@@ -1,5 +1,6 @@
 package news.caughtup.caughtup.ui.prime;
 
+import android.animation.LayoutTransition;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -140,13 +142,15 @@ public class HomeActivity extends AppCompatActivity {
         //region search icon
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search_icon));
         final LinearLayout searchContextBar = (LinearLayout) findViewById(R.id.home_search_context_bar);
+        final FrameLayout container = (FrameLayout) findViewById(R.id.home_main_container);
 
         // Detect when Search Icon clicked
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 titleTextView.setVisibility(View.GONE);
-                searchContextBar.setVisibility(View.VISIBLE);
+                searchContextBar.animate().translationY(searchContextBar.getHeight());
+                container.animate().translationY(searchContextBar.getHeight());
             }
         });
 
@@ -155,7 +159,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onClose() {
                 titleTextView.setVisibility(View.VISIBLE);
-                searchContextBar.setVisibility(View.GONE);
+                searchContextBar.animate().translationY(0);
+                container.animate().translationY(0);
                 return false;
             }
         });
