@@ -78,7 +78,13 @@ public class NewsFeedFragment extends Fragment {
                         for(Resource resource : currentUser.getFollowing()) {
                             Callback callback = getArticlesCallback();
                             RestProxy proxy = RestProxy.getProxy();
-                            proxy.getCall(String.format("/articles?source=%s", resource.getName()), "", callback);
+                            String endPoint;
+                            if(resource instanceof NewsSource) {
+                                endPoint = String.format("/articles?source=%s", resource.getName());
+                            } else {
+                                endPoint = String.format("/share?user_id=%d", ((User) resource).getUserId());
+                            }
+                            proxy.getCall(endPoint, "", callback);
                         }
                     } catch (JSONException ignored) {
                         Log.e("JSONException", "Couldn't read returned JSON");
