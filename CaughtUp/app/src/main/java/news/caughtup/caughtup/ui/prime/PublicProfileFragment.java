@@ -84,33 +84,52 @@ public class PublicProfileFragment extends Fragment {
                     followers != null ? followers.size() : 0);
 
             // UserName
-            TextView userName = (TextView) rootView.findViewById(R.id.public_profile_username_text_view);
-            userName.setText(user.getName());
+            TextView userNameView = (TextView) rootView.findViewById(R.id.public_profile_username_text_view);
+            userNameView.setText(user.getName());
 
             // Gender
-            TextView userGender = (TextView) rootView.findViewById(R.id.public_profile_gender_text_view);
-            userGender.setText(Character.toString(user.getGender()));
+            TextView genderView = (TextView) rootView.findViewById(R.id.public_profile_gender_text_view);
+            char gender = user.getGender();
+            if(gender != 'x') {
+                genderView.setText(Character.toString(gender));
+            }
 
             // Age
-            TextView userAge = (TextView) rootView.findViewById(R.id.public_profile_age_text_view);
-            userAge.setText(String.format("%d", user.getAge()));
+            TextView ageView = (TextView) rootView.findViewById(R.id.public_profile_age_text_view);
+            int age = user.getAge();
+            if(age > 1) {
+                ageView.setText(String.format("%d", age));
+            }
 
             // Full Name
-            TextView userFullName = (TextView) rootView.findViewById(R.id.public_profile_full_name_text_view);
-            userFullName.setText(user.getFullName());
+            TextView fullNameView = (TextView) rootView.findViewById(R.id.public_profile_full_name_text_view);
+            String fullName = user.getFullName();
+            if(fullName != null && !fullName.isEmpty()) {
+                fullNameView.setText(user.getFullName());
+            }
 
             // Location
-            TextView userLocation = (TextView) rootView.findViewById(R.id.public_profile_location_text_view);
-            userLocation.setText(user.getLocation());
+            TextView locationView = (TextView) rootView.findViewById(R.id.public_profile_location_text_view);
+            String location = user.getLocation();
+            if(location != null && !location.isEmpty()) {
+                locationView.setText(location);
+            }
 
             // About Me
-            TextView userAboutMe = (TextView) rootView.findViewById(R.id.public_profile_about_me_text_view);
-            userAboutMe.setText(user.getAboutMe());
+            TextView aboutMeView = (TextView) rootView.findViewById(R.id.public_profile_about_me_text_view);
+            String aboutMe = user.getAboutMe();
+            if(aboutMe != null && !aboutMe.isEmpty()) {
+                aboutMeView.setText(aboutMe);
+            }
 
             // Profile Picture
-            ImageView userProfilePic = (ImageView) rootView.findViewById(R.id.public_profile_user_picture_image_view);
-            Drawable userProfileDrawable = getResources().getDrawable(user.getProfileImageId(), null);
-            userProfilePic.setImageDrawable(userProfileDrawable);
+            ImageView profilePicView = (ImageView) rootView.findViewById(R.id.public_profile_user_picture_image_view);
+            int imageResourceId = user.getProfileImageId();
+            if(imageResourceId > 0) {
+                profilePicView.setImageDrawable(getActivity().getResources().getDrawable(imageResourceId, null));
+            } else {
+                profilePicView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
+            }
 
             // Followers
             TextView followersTextView = (TextView) rootView.findViewById(R.id.public_profile_followers_text_view);
@@ -149,8 +168,12 @@ public class PublicProfileFragment extends Fragment {
         followerLayout.setOrientation(LinearLayout.VERTICAL);
 
         ImageView profilePic = new ImageView(context);
-        Drawable profilePicDrawable = getResources().getDrawable(follower.getProfileImageId(), null);
-        profilePic.setImageDrawable(profilePicDrawable);
+        int profilePicId = follower.getProfileImageId();
+        if (profilePicId > 0) {
+            profilePic.setImageDrawable(getResources().getDrawable(profilePicId, null));
+        } else {
+            profilePic.setImageDrawable(getResources().getDrawable(R.mipmap.profile_pic_2, null));
+        }
         followerLayout.addView(profilePic,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 

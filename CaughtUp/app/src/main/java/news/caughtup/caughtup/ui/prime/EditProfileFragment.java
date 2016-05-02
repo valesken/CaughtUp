@@ -58,12 +58,12 @@ public class EditProfileFragment extends Fragment {
         User user = HomeActivity.getCurrentUser();
 
         // Profile Picture
-        ImageView profileImageView = (ImageView) rootView.findViewById(R.id.edit_profile_photo_image_view);
+        ImageView profilePicView = (ImageView) rootView.findViewById(R.id.edit_profile_photo_image_view);
         int imageResourceId = user.getProfileImageId();
         if(imageResourceId > 0) {
-            profileImageView.setImageDrawable(getActivity().getResources().getDrawable(imageResourceId, null));
+            profilePicView.setImageDrawable(getActivity().getResources().getDrawable(imageResourceId, null));
         } else {
-            profileImageView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
+            profilePicView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
         }
 
         // Username
@@ -76,24 +76,28 @@ public class EditProfileFragment extends Fragment {
         if(gender != 'x') {
             genderView.setText(Character.toString(gender));
         }
+
         // Age
         EditText ageView = (EditText) rootView.findViewById(R.id.edit_profile_age_edit_text);
         int age = user.getAge();
         if(age > 1) {
             ageView.setText(String.format("%d", age));
         }
+
         // Full Name
         EditText fullNameView = (EditText) rootView.findViewById(R.id.edit_profile_full_name_edit_text);
         String fullName = user.getFullName();
         if(fullName != null && !fullName.isEmpty()) {
             fullNameView.setText(user.getFullName());
         }
+
         // Location
         EditText locationView = (EditText) rootView.findViewById(R.id.edit_profile_location_edit_text);
         String location = user.getLocation();
         if(location != null && !location.isEmpty()) {
             locationView.setText(location);
         }
+
         // About me
         EditText aboutMeView = (EditText) rootView.findViewById(R.id.edit_profile_about_me_edit_text);
         String aboutMe = user.getAboutMe();
