@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +26,7 @@ import java.util.Map;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.util.ImageManager;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
@@ -136,12 +136,7 @@ public class PublicProfileFragment extends Fragment {
 
             // Profile Picture
             ImageView profilePicView = (ImageView) rootView.findViewById(R.id.public_profile_user_picture_image_view);
-            int imageResourceId = user.getProfileImageId();
-            if(imageResourceId > 0) {
-                profilePicView.setImageDrawable(getActivity().getResources().getDrawable(imageResourceId, null));
-            } else {
-                profilePicView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
-            }
+            new ImageManager(profilePicView, getActivity(), user.getProfileImageURL());
 
             // Followers
             List<User> followers = user.getFollowers();
@@ -181,14 +176,10 @@ public class PublicProfileFragment extends Fragment {
         LinearLayout followerLayout = new LinearLayout(context);
         followerLayout.setOrientation(LinearLayout.VERTICAL);
 
-        // Add picture to layout
+        // Add picture to layout and load image asynchronously.
         ImageView profilePic = new ImageView(context);
-        int profilePicId = follower.getProfileImageId();
-        if (profilePicId > 0) {
-            profilePic.setImageDrawable(getResources().getDrawable(profilePicId, null));
-        } else {
-            profilePic.setImageDrawable(getResources().getDrawable(R.mipmap.profile_pic_2, null));
-        }
+        new ImageManager(profilePic, getActivity(), follower.getProfileImageURL());
+
         followerLayout.addView(profilePic,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 

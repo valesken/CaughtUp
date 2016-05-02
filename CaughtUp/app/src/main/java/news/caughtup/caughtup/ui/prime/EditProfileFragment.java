@@ -4,6 +4,10 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -23,19 +27,22 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.fabric.sdk.android.services.network.HttpRequest;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.util.ImageManager;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
 public class EditProfileFragment extends Fragment {
-
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
+
     private User user;
     private ImageView profilePicView;
     private TextView userNameView;
@@ -55,8 +62,6 @@ public class EditProfileFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
         user = HomeActivity.getCurrentUser();
-        System.out.println("Email: " + user.getEmail());
-        System.out.println("Full Name: " + user.getFullName());
         //get references to views region
         profilePicView = (ImageView) rootView.findViewById(R.id.edit_profile_photo_image_view);
         userNameView = (TextView) rootView.findViewById(R.id.edit_profile_username_text_view);
@@ -120,14 +125,7 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void setUpCurrentUserInfo() {
-
-        // Profile Picture
-        int imageResourceId = user.getProfileImageId();
-        if(imageResourceId > 0) {
-            profilePicView.setImageDrawable(getActivity().getResources().getDrawable(imageResourceId, null));
-        } else {
-            profilePicView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
-        }
+        loadProfilePicture();
 
         // Username
         userNameView.setText(user.getName());
@@ -281,6 +279,13 @@ public class EditProfileFragment extends Fragment {
             if(aboutMe != null && !aboutMe.isEmpty()) {
                 jsonObject.put("aboutMe", aboutMe);
             }
+
+            // Profile Picture
+            String profilePictureURL = user.getProfileImageURL();
+            if(profilePictureURL != null && !profilePictureURL.isEmpty()) {
+                jsonObject.put("profilePictureURL", profilePictureURL);
+            }
+
             return jsonObject;
         } catch (JSONException e) {
             Log.e("JSONException", "Couldn't create JSON with updated user");
@@ -324,5 +329,67 @@ public class EditProfileFragment extends Fragment {
             }
         });
         builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == getActivity().RESULT_OK) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                Bitmap bitmap = null;
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                if (requestCode == REQUEST_CAMERA) {
+                    Log.e("Inside REQUEST_CAMERA: ", "Handling an image");
+                    bitmap = (Bitmap) data.getExtras().get("data");
+                } else if (requestCode == SELECT_FILE) {
+                    System.out.println("Inside SELECT_FILE");
+                    Uri selectedImageUri = data.getData();
+                    String[] projection = { MediaStore.Images.Media.DATA };
+                    Cursor cursor = getActivity().managedQuery(selectedImageUri, projection, null, null, null);
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    cursor.moveToFirst();
+                    String imagePath = cursor.getString(column_index);
+                    bitmap = BitmapFactory.decodeFile(imagePath);
+                    System.out.println("After SELECT_FILE");
+                }
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream); //compress to which format you want.
+                byte[] byte_arr = stream.toByteArray();
+                String imageStr = HttpRequest.Base64.encodeBytes(byte_arr);
+                jsonObject.put("image", imageStr);
+                jsonObject.put("type", "jpeg");
+                Callback callback = getUploadImageCallback();
+                RestProxy proxy = RestProxy.getProxy();
+                proxy.putCall(String.format("/profile/%s?picture=true", user.getName()), jsonObject.toString(), callback);
+            } catch (JSONException e) {
+                Log.e("JSONException", "Could not form correct JSON object");
+            }
+        }
+    }
+
+    private Callback getUploadImageCallback() {
+        return new Callback() {
+            @Override
+            public void process(ResponseObject responseObject) {
+                if (responseObject.getResponseCode() == 200) {
+                    JSONObject jsonObject = responseObject.getJsonObject();
+                    try {
+                        String profilePicURL = jsonObject.getString("profile_picture_url");
+                        user.setProfileImageURL(profilePicURL);
+                        loadProfilePicture();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getActivity().getResources().getString(R.string.update_user_server_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+    }
+
+    private void loadProfilePicture(){
+        new ImageManager(profilePicView, getActivity(), user.getProfileImageURL());
     }
 }
