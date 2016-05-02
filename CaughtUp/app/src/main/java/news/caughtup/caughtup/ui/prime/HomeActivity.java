@@ -108,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
         searchContexts = new ArrayList<>();
         TextView allTextView = (TextView) findViewById(R.id.search_context_all);
         if (allTextView != null) {
-            allTextView.setBackground(getDrawable(R.drawable.search_context_selected));
+            allTextView.setBackground(getDrawable(R.drawable.custom_button_selected));
             currentSearchContext = allTextView;
         }
         setUpSearchContext(allTextView);
@@ -244,9 +244,9 @@ public class HomeActivity extends AppCompatActivity {
                 currentSearchContext = searchContext;
                 for (TextView textView : searchContexts) {
                     if(textView.equals(searchContext)) {
-                        textView.setBackground(getDrawable(R.drawable.search_context_selected));
+                        textView.setBackground(getDrawable(R.drawable.custom_button_selected));
                     } else {
-                        textView.setBackground(getDrawable(R.drawable.search_context_normal));
+                        textView.setBackground(getDrawable(R.drawable.custom_button_normal));
                     }
                 }
                 return false;

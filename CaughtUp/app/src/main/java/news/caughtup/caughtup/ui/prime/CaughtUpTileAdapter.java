@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -279,8 +278,6 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
                         followButton.setTag(followTag); // Meaning next click will cause it to follow
                     }
                 } else {
-                    Log.e("Error code", String.format("%d", responseObject.getResponseCode()));
-                    Log.e("Response from server", responseObject.getJsonObject().toString());
                     Toast.makeText(activity,
                             activity.getResources().getString(R.string.follow_server_error),
                             Toast.LENGTH_LONG).show();

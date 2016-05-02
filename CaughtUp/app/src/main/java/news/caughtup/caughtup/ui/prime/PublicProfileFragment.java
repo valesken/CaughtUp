@@ -5,10 +5,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,7 +24,6 @@ import java.util.List;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
-import news.caughtup.caughtup.entities.Users;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
@@ -35,6 +34,8 @@ public class PublicProfileFragment extends Fragment {
     private User user;
     private GridLayout followersGrid;
     private RestProxy proxy;
+    private Drawable pressedButton;
+    private Drawable normalButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class PublicProfileFragment extends Fragment {
         HomeActivity activity = (HomeActivity) getActivity();
         context = activity.getApplicationContext();
         Bundle args = getArguments();
+
+        pressedButton = getResources().getDrawable(R.drawable.custom_button_selected, null);
+        normalButton = getResources().getDrawable(R.drawable.custom_button_normal, null);
 
         proxy = RestProxy.getProxy();
         String username = args.getString("username");
@@ -142,21 +146,23 @@ public class PublicProfileFragment extends Fragment {
             }
 
             // Follow Button
-            final Button userFollowButton = (Button) rootView.findViewById(R.id.public_profile_follow_me_button);
+            final TextView userFollowButton = (TextView) rootView.findViewById(R.id.public_profile_follow_me_button);
+            final User currentUser = HomeActivity.getCurrentUser();
+            if(currentUser.isFollowing(user.getResourceId())) {
+                userFollowButton.setText(getResources().getString(R.string.unfollow_button_text));
+                userFollowButton.setBackground(pressedButton);
+            }
             userFollowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (userFollowButton.getText().toString().equals(getResources().getString(R.string.follow_me_button_text)
-                    )) {
-                        Toast.makeText(context,
-                                String.format("Now following %s!", user.getName()),
-                                Toast.LENGTH_SHORT).show();
-                        userFollowButton.setText(getResources().getString(R.string.unfollow_button_text));
+                    String label = userFollowButton.getText().toString();
+                    Callback callback = getFollowCallback(userFollowButton);
+                    if (label.equals(getResources().getString(R.string.follow_me_button_text))) {
+                        proxy.postCall(String.format("/follow?user_id=%d&resource_id=%d", currentUser.getUserId(),
+                                user.getResourceId()), "", callback);
                     } else {
-                        Toast.makeText(context,
-                                String.format("Stopped following %s.", user.getName()),
-                                Toast.LENGTH_SHORT).show();
-                        userFollowButton.setText(getResources().getString(R.string.follow_me_button_text));
+                        proxy.deleteCall(String.format("/follow?user_id=%d&resource_id=%d", currentUser.getUserId(),
+                                user.getResourceId()), "", callback);
                     }
                 }
             });
@@ -185,5 +191,36 @@ public class PublicProfileFragment extends Fragment {
 
         followersGrid.addView(followerLayout,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    private Callback getFollowCallback(final TextView userFollowButton) {
+        return new Callback() {
+            @Override
+            public void process(ResponseObject responseObject) {
+                if (responseObject.getResponseCode() == 200) {
+                    User currentUser = HomeActivity.getCurrentUser();
+                    String label = userFollowButton.getText().toString();
+                    if (label.equals(getResources().getString(R.string.follow_me_button_text))) {
+                        userFollowButton.setText(getResources().getString(R.string.unfollow_button_text));
+                        userFollowButton.setBackground(pressedButton);
+                        currentUser.follow(user);
+                        Toast.makeText(context,
+                                String.format("Now following %s!", user.getName()),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        userFollowButton.setText(getResources().getString(R.string.follow_me_button_text));
+                        userFollowButton.setBackground(normalButton);
+                        currentUser.unfollow(user.getResourceId());
+                        Toast.makeText(context,
+                                String.format("Stopped following %s.", user.getName()),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getActivity().getResources().getString(R.string.follow_server_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        };
     }
 }
