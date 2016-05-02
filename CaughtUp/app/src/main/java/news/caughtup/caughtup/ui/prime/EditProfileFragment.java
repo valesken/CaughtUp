@@ -102,7 +102,8 @@ public class EditProfileFragment extends Fragment {
                 RestProxy proxy = RestProxy.getProxy();
                 Callback callback = getUpdatedUserCallback();
                 JSONObject jsonObject = createJSON();
-                if (!validateEmail(user.getEmail())) {
+                Log.e("JSON Object", jsonObject.toString());
+                if (!validateEmail(emailView.getText().toString())) {
                     Toast.makeText(getActivity(), "The email address is invalid",
                             Toast.LENGTH_SHORT)
                             .show();

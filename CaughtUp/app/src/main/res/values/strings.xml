@@ -35,9 +35,9 @@
 
     <!-- Data for populating Gender field -->
     <string-array name="gender_array">
-        <item>None</item>
-        <item>Male</item>
-        <item>Female</item>
+        <item>none</item>
+        <item>male</item>
+        <item>female</item>
     </string-array>
 
     <!-- Strings for test data -->
