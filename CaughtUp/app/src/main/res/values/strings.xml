@@ -57,6 +57,10 @@
     <string name="news_feed_following_server_error">Cannot get the resources you follow.</string>
     <string name="news_feed_article_server_error">Error occured while fetching articles from resources you follow.</string>
     <string name="follow_server_error">Internal server error occured while trying to follow/unfollow a resource.</string>
+    <string name="change_password_server_error">Internal server error occured while trying to change your password.</string>
+    <string name="wrong_old_password">Wrong old password.</string>
+    <string name="user_not_found">User could not be found.</string>
+    <string name="passwords_should_match">Passwords should match.</string>
 
     <!-- Strings used for search context -->
     <string name="search_context_all_text">all</string>
@@ -64,5 +68,8 @@
     <string name="search_context_article_text">article</string>
     <string name="search_context_news_source_text">news source</string>
     <string name="get_user_server_error">Could not get user from server.</string>
+
+    <!-- Strings used for messages to the user -->
+    <string name="successfull_password_change">Your password has been updated.</string>
 
 </resources>
