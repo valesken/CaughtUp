@@ -104,7 +104,8 @@ public class EditProfileFragment extends Fragment {
                 JSONObject jsonObject = createJSON();
                 Log.e("JSON Object", jsonObject.toString());
                 if (!validateEmail(emailView.getText().toString())) {
-                    Toast.makeText(getActivity(), "The email address is invalid",
+                    Toast.makeText(getActivity(),
+                            getActivity().getResources().getString(R.string.invalid_email_address),
                             Toast.LENGTH_SHORT)
                             .show();
                 } else {
@@ -189,7 +190,7 @@ public class EditProfileFragment extends Fragment {
                             updateUser();
                         } else {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    getActivity().getResources().getString(R.string.get_user_server_error),
+                                    getActivity().getResources().getString(R.string.update_user_server_error),
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
@@ -197,7 +198,7 @@ public class EditProfileFragment extends Fragment {
                     }
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(),
-                            getActivity().getResources().getString(R.string.get_user_server_error),
+                            getActivity().getResources().getString(R.string.update_user_server_error),
                             Toast.LENGTH_LONG).show();
                 }
             }
