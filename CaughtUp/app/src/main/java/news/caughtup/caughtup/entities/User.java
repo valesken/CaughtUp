@@ -22,7 +22,7 @@ public class User extends Resource implements ICaughtUpItem {
     private int userId;
     private String fullName;
     private int age;
-    private char gender;
+    private String gender;
     private String location;
     private String aboutMe;
     private String email;
@@ -55,9 +55,9 @@ public class User extends Resource implements ICaughtUpItem {
 
         // Gender
         try {
-            gender = jsonObject.getString("gender").charAt(0);
+            gender = jsonObject.getString("gender");
         } catch (JSONException ignored) {
-            gender = 'x';
+            gender = "None";
         }
 
         // Location
@@ -103,7 +103,7 @@ public class User extends Resource implements ICaughtUpItem {
         this.age = age;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -166,7 +166,7 @@ public class User extends Resource implements ICaughtUpItem {
         return age;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 

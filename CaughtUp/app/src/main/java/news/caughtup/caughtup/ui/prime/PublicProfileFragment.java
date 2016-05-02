@@ -101,9 +101,9 @@ public class PublicProfileFragment extends Fragment {
 
             // Gender
             TextView genderView = (TextView) rootView.findViewById(R.id.public_profile_gender_text_view);
-            char gender = user.getGender();
-            if(gender != 'x') {
-                genderView.setText(Character.toString(gender));
+            String gender = user.getGender();
+            if(gender != null && !gender.isEmpty()) {
+                genderView.setText(gender);
             }
 
             // Age

@@ -66,7 +66,7 @@
                 android:textColor="@android:color/black"
                 android:text="@string/edit_profile_gender_hint"/>
 
-            <EditText
+            <Spinner
                 android:id="@+id/edit_profile_gender_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,6 +127,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:labelFor="@+id/edit_profile_email_edit_text"
+            android:textColor="@android:color/black"
+            android:text="@string/edit_profile_email_hint" />
+
+        <EditText
+            android:id="@+id/edit_profile_email_edit_text"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:textAlignment="center"
+            android:inputType="textEmailAddress"
+            android:hint="@string/edit_profile_email_hint"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:labelFor="@+id/edit_profile_location_edit_text"
             android:textColor="@android:color/black"
             android:text="@string/edit_profile_location_hint" />
@@ -164,5 +183,12 @@
         android:background="@color/panel_background_color"
         android:scrollbars="vertical"
         android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:id="@+id/edit_profile_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/save_changes"
+        android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>
