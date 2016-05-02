@@ -66,6 +66,8 @@
     <string name="news_feed_following_server_error">Cannot get the resources you follow.</string>
     <string name="news_feed_article_server_error">Error occured while fetching articles from resources you follow.</string>
     <string name="follow_server_error">Internal server error occured while trying to follow/unfollow a resource.</string>
+    <string name="update_user_server_error">Internal server error occured while trying to update your info.</string>
+    <string name="invalid_email_address">Invalid email address</string>
 
     <!-- Strings used for search context -->
     <string name="search_context_all_text">all</string>
