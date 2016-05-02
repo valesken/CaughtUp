@@ -66,8 +66,6 @@ public class EditProfileFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
         user = HomeActivity.getCurrentUser();
-        System.out.println("Email: " + user.getEmail());
-        System.out.println("Full Name: " + user.getFullName());
         //get references to views region
         profilePicView = (ImageView) rootView.findViewById(R.id.edit_profile_photo_image_view);
         userNameView = (TextView) rootView.findViewById(R.id.edit_profile_username_text_view);
@@ -349,17 +347,15 @@ public class EditProfileFragment extends Fragment {
                     Log.e("Inside REQUEST_CAMERA: ", "Handling an image");
                     bitmap = (Bitmap) data.getExtras().get("data");
                 } else if (requestCode == SELECT_FILE) {
+                    System.out.println("Inside SELECT_FILE");
                     Uri selectedImageUri = data.getData();
-                    String[] projection = {MediaStore.MediaColumns.DATA};
-                    CursorLoader cursorLoader = new CursorLoader(getActivity(), selectedImageUri,
-                            projection, null, null, null);
-                    Cursor cursor = cursorLoader.loadInBackground();
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+                    String[] projection = { MediaStore.Images.Media.DATA };
+                    Cursor cursor = getActivity().managedQuery(selectedImageUri, projection, null, null, null);
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
-                    String selectedImagePath = cursor.getString(column_index);
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inJustDecodeBounds = true;
-                    bitmap = BitmapFactory.decodeFile(selectedImagePath, options);
+                    String imagePath = cursor.getString(column_index);
+                    bitmap = BitmapFactory.decodeFile(imagePath);
+                    System.out.println("After SELECT_FILE");
                 }
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream); //compress to which format you want.
                 byte[] byte_arr = stream.toByteArray();
