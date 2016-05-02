@@ -30,7 +30,7 @@
     <string name="edit_profile_age_hint">Age</string>
     <string name="edit_profile_gender_hint">Gender</string>
     <string name="edit_profile_about_me_hint">About me</string>
-    <string name="save_changes">Save</string>
+    <string name="save_changes">Save Changes</string>
     <string name="news_feed_no_articles_text">You\'re not currently following anyone! You should go to the search page and find someone to follow.</string>
 
     <!-- Data for populating Gender field -->

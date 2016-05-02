@@ -56,8 +56,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/inputs"
-        android:backgroundTint="#fa932d"
-        android:text="Register"
-        android:textColor="#ffffff" />
+        android:background="@drawable/custom_button_selector"
+        android:textColor="@android:color/white"
+        android:text="Register" />
 
 </RelativeLayout>
