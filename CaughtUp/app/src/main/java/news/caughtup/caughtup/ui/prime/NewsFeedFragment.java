@@ -1,8 +1,14 @@
 package news.caughtup.caughtup.ui.prime;
 
+import android.app.Fragment;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -22,18 +28,21 @@ import news.caughtup.caughtup.entities.Users;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
-public class NewsFeedFragment extends ListFragment {
+public class NewsFeedFragment extends Fragment {
 
+    private View rootView;
     private ArrayList<ICaughtUpItem> dataArray = new ArrayList<>();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_news_feed, container, false);
 
         User currentUser = HomeActivity.getCurrentUser();
         Callback callback = getFollowingCallback();
         RestProxy proxy = RestProxy.getProxy();
         proxy.getCall(String.format("/follow?user_id=%d&type=all", currentUser.getUserId()), "", callback);
+
+        return rootView;
     }
 
     private Callback getFollowingCallback() {
@@ -91,13 +100,17 @@ public class NewsFeedFragment extends ListFragment {
             public void process(ResponseObject responseObject) {
                 if (responseObject.getResponseCode() == 200) {
                     JSONObject jsonObject = responseObject.getJsonObject();
+                    ListView newsFeedList = (ListView) rootView.findViewById(R.id.news_feed_list);
+                    TextView noArticlesTextView = (TextView) rootView.findViewById(R.id.news_feed_no_articles_text);
                     try {
                         JSONArray articlesArray = jsonObject.getJSONArray("articles");
                         for(int i = 0; i < articlesArray.length(); ++i) {
                             Article article = new Article(articlesArray.getJSONObject(i));
                             dataArray.add(article);
-                            setListAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
+                            noArticlesTextView.setVisibility(View.GONE);
                         }
+                        newsFeedList.setAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
+                        newsFeedList.setVisibility(View.VISIBLE);
                     } catch (JSONException ignored) {
                         Log.e("JSONException", "Couldn't read returned JSON");
                     } catch (NullPointerException ignored) {

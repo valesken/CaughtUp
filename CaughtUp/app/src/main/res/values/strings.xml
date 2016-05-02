@@ -29,6 +29,7 @@
     <string name="edit_profile_age_hint">Age</string>
     <string name="edit_profile_gender_hint">Gender</string>
     <string name="edit_profile_about_me_hint">About me</string>
+    <string name="news_feed_no_articles_text">You\'re not currently following anyone! You should go to the search page and find someone to follow.</string>
 
     <!-- Strings for test data -->
     <string name="test_techcrunch_url">http://techcrunch.com/2016/04/04/saleforce-acquires-metamind/</string>
@@ -46,20 +47,21 @@
     <string name="server_connection_string" tools:ignore="TypographyDashes">http://ec2-54-153-56-178.us-west-1.compute.amazonaws.com:8080/caughtup</string>
     <string name="server_connection_string_local">http://localhost:8080/caughtup</string>
 
-    <!-- Strings used in login/register -->
+    <!-- Strings used in error messages -->
     <string name="login_server_error">Your username or password was incorrect.</string>
     <string name="register_server_error">This username is already taken.</string>
     <string name="empty_user_name">Username field must not be empty.</string>
     <string name="empty_password">Password must not be empty.</string>
     <string name="register_password_error">Both password fields must match and not be empty.</string>
+    <string name="search_server_error">Could not process your search query. Please try again.</string>
+    <string name="news_feed_following_server_error">Cannot get the resources you follow.</string>
+    <string name="news_feed_article_server_error">Error occured while fetching articles from resources you follow.</string>
+    <string name="follow_server_error">Internal server error occured while trying to follow/unfollow a resource.</string>
 
     <!-- Strings used for search context -->
     <string name="search_context_all_text">all</string>
     <string name="search_context_user_text">user</string>
     <string name="search_context_article_text">article</string>
     <string name="search_context_news_source_text">news source</string>
-    <string name="search_server_error">Could not process your search query. Please try again.</string>
-    <string name="news_feed_following_server_error">Cannot get the resources you follow.</string>
-    <string name="news_feed_article_server_error">Error occured while fetching articles from resources you follow.</string>
-    <string name="follow_server_error">Internal server error occured while trying to follow/unfollow a resource.</string>
+
 </resources>
