@@ -28,6 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:textSize="24sp"
                 android:textColor="@android:color/black"/>
 
             <LinearLayout
@@ -51,12 +52,17 @@
 
             </LinearLayout>
 
-            <Button
+            <TextView
                 android:id="@+id/public_profile_follow_me_button"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/follow_me_button_text"/>
+                android:layout_margin="3dp"
+                android:elevation="5dp"
+                android:background="@drawable/custom_button_normal"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:text="@string/follow_me_button_text"
+                android:textIsSelectable="true"/>
 
         </LinearLayout>
 

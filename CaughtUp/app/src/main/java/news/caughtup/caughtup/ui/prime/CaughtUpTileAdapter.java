@@ -130,7 +130,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
             public void onClick(View v) {
                 PublicProfileFragment publicProfile = new PublicProfileFragment();
                 Bundle args = new Bundle();
-                args.putString("user", user.getName());
+                args.putString("username", user.getName());
                 publicProfile.setArguments(args);
                 HomeActivity.executeTransaction(publicProfile, user.getName(), user.getName());
             }
