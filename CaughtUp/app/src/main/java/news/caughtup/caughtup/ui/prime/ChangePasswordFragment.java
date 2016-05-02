@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import news.caughtup.caughtup.R;
-import news.caughtup.caughtup.util.StringRetriever;
 
 public class ChangePasswordFragment extends Fragment {
 
