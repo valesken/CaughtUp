@@ -123,6 +123,19 @@ public class User extends Resource implements ICaughtUpItem {
         followers.add(user);
     }
 
+    public void removeFollower(User user) {
+        User markedToRemove = null;
+        for(User follower : followers) {
+            if(follower.getUserId() == user.getUserId()) {
+                markedToRemove = follower;
+                break;
+            }
+        }
+        if(markedToRemove != null) {
+            followers.remove(markedToRemove);
+        }
+    }
+
     public void clearFollowing() {
         followingMap.clear();
     }

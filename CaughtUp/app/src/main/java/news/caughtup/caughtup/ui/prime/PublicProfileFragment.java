@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
@@ -19,7 +20,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
@@ -33,6 +36,7 @@ public class PublicProfileFragment extends Fragment {
     private Context context;
     private User user;
     private GridLayout followersGrid;
+    private Map<String, View> followersMap;
     private RestProxy proxy;
     private Drawable pressedButton;
     private Drawable normalButton;
@@ -43,6 +47,7 @@ public class PublicProfileFragment extends Fragment {
         HomeActivity activity = (HomeActivity) getActivity();
         context = activity.getApplicationContext();
         Bundle args = getArguments();
+        followersMap = new HashMap<>();
 
         pressedButton = getResources().getDrawable(R.drawable.custom_button_selected, null);
         normalButton = getResources().getDrawable(R.drawable.custom_button_normal, null);
@@ -80,13 +85,16 @@ public class PublicProfileFragment extends Fragment {
         };
     }
 
+    private void setFollowersMessage(List<User> followers) {
+        String followersMsg = String.format("%s has %d followers",
+                user.getName(),
+                followers != null ? followers.size() : 0);
+        TextView followersTextView = (TextView) rootView.findViewById(R.id.public_profile_followers_text_view);
+        followersTextView.setText(followersMsg);
+    }
+
     private void setUpUser() {
         if(user != null) {
-            List<User> followers = user.getFollowers();
-            String followersMsg = String.format("%s has %d followers",
-                    user.getName(),
-                    followers != null ? followers.size() : 0);
-
             // UserName
             TextView userNameView = (TextView) rootView.findViewById(R.id.public_profile_username_text_view);
             userNameView.setText(user.getName());
@@ -136,14 +144,14 @@ public class PublicProfileFragment extends Fragment {
             }
 
             // Followers
-            TextView followersTextView = (TextView) rootView.findViewById(R.id.public_profile_followers_text_view);
+            List<User> followers = user.getFollowers();
             followersGrid = (GridLayout) rootView.findViewById(R.id.public_profile_followers_grid);
-            followersTextView.setText(followersMsg);
             if (followers != null) {
                 for (User follower : followers) {
                     addFollower(follower);
                 }
             }
+            setFollowersMessage(followers);
 
             // Follow Button
             final TextView userFollowButton = (TextView) rootView.findViewById(R.id.public_profile_follow_me_button);
@@ -169,10 +177,11 @@ public class PublicProfileFragment extends Fragment {
         }
     }
 
-    private void addFollower(User follower) {
+    private void addFollower(final User follower) {
         LinearLayout followerLayout = new LinearLayout(context);
         followerLayout.setOrientation(LinearLayout.VERTICAL);
 
+        // Add picture to layout
         ImageView profilePic = new ImageView(context);
         int profilePicId = follower.getProfileImageId();
         if (profilePicId > 0) {
@@ -183,14 +192,30 @@ public class PublicProfileFragment extends Fragment {
         followerLayout.addView(profilePic,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
+        // Add username to layout
         TextView userName = new TextView(context);
         userName.setTextColor(Color.BLACK);
         userName.setText(follower.getName());
         followerLayout.addView(userName,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+        // Add onTouchListener that launches public profile of follower
+        followerLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                PublicProfileFragment fragment = new PublicProfileFragment();
+                Bundle args = new Bundle();
+                args.putString("username", follower.getName());
+                fragment.setArguments(args);
+                HomeActivity.executeTransaction(fragment, follower.getName(), follower.getName());
+                return true;
+            }
+        });
+
+        // add layout to grid
         followersGrid.addView(followerLayout,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        followersMap.put(follower.getName(), followerLayout);
     }
 
     private Callback getFollowCallback(final TextView userFollowButton) {
@@ -201,6 +226,9 @@ public class PublicProfileFragment extends Fragment {
                     User currentUser = HomeActivity.getCurrentUser();
                     String label = userFollowButton.getText().toString();
                     if (label.equals(getResources().getString(R.string.follow_me_button_text))) {
+                        addFollower(currentUser);
+                        user.addFollower(currentUser);
+                        setFollowersMessage(user.getFollowers());
                         userFollowButton.setText(getResources().getString(R.string.unfollow_button_text));
                         userFollowButton.setBackground(pressedButton);
                         currentUser.follow(user);
@@ -208,6 +236,11 @@ public class PublicProfileFragment extends Fragment {
                                 String.format("Now following %s!", user.getName()),
                                 Toast.LENGTH_SHORT).show();
                     } else {
+                        user.removeFollower(currentUser);
+                        View followerView = followersMap.get(currentUser.getName());
+                        followersGrid.removeView(followerView);
+                        followersMap.remove(currentUser.getName());
+                        setFollowersMessage(user.getFollowers());
                         userFollowButton.setText(getResources().getString(R.string.follow_me_button_text));
                         userFollowButton.setBackground(normalButton);
                         currentUser.unfollow(user.getResourceId());
