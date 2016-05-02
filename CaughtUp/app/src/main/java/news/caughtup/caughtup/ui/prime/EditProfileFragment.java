@@ -2,15 +2,11 @@ package news.caughtup.caughtup.ui.prime;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -32,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,13 +35,14 @@ import io.fabric.sdk.android.services.network.HttpRequest;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.util.ImageManager;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
 public class EditProfileFragment extends Fragment {
-
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
+
     private User user;
     private ImageView profilePicView;
     private TextView userNameView;
@@ -129,14 +125,7 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void setUpCurrentUserInfo() {
-
-        // Profile Picture
-        int imageResourceId = user.getProfileImageId();
-        if(imageResourceId > 0) {
-            profilePicView.setImageDrawable(getActivity().getResources().getDrawable(imageResourceId, null));
-        } else {
-            profilePicView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
-        }
+        loadProfilePicture();
 
         // Username
         userNameView.setText(user.getName());
@@ -290,6 +279,13 @@ public class EditProfileFragment extends Fragment {
             if(aboutMe != null && !aboutMe.isEmpty()) {
                 jsonObject.put("aboutMe", aboutMe);
             }
+
+            // Profile Picture
+            String profilePictureURL = user.getProfileImageURL();
+            if(profilePictureURL != null && !profilePictureURL.isEmpty()) {
+                jsonObject.put("profilePictureURL", profilePictureURL);
+            }
+
             return jsonObject;
         } catch (JSONException e) {
             Log.e("JSONException", "Couldn't create JSON with updated user");
@@ -379,10 +375,8 @@ public class EditProfileFragment extends Fragment {
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
                         String profilePicURL = jsonObject.getString("profile_picture_url");
-                        Log.e("ProfilePicURl: ", profilePicURL);
-                        //int imageId = getImageId();
-                        //profilePicView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
-                        //user.setProfileImageId(imageId);
+                        user.setProfileImageURL(profilePicURL);
+                        loadProfilePicture();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -395,12 +389,7 @@ public class EditProfileFragment extends Fragment {
         };
     }
 
-    private int getImageId() {
-        Random r = new Random();
-        int n;
-        do {
-            n = r.nextInt(Integer.MAX_VALUE);
-        } while (getResources().getDrawable(n, null) != null);
-        return n;
+    private void loadProfilePicture(){
+        new ImageManager(profilePicView, getActivity(), user.getProfileImageURL());
     }
 }

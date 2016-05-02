@@ -25,6 +25,7 @@ import news.caughtup.caughtup.entities.Resource;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.util.Constants;
+import news.caughtup.caughtup.util.ImageManager;
 import news.caughtup.caughtup.util.StringRetriever;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.FacebookManager;
@@ -122,7 +123,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
 
         // Set user picture
         ImageView thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail_tile_view);
-        thumbnail.setImageDrawable(activity.getResources().getDrawable(user.getProfileImageId(), null));
+        new ImageManager(thumbnail, activity, user.getProfileImageURL());
 
         // Set onTouchListener to load User's public profile on touch
         convertView.setOnClickListener(new View.OnClickListener() {

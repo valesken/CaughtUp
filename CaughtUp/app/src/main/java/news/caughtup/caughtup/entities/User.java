@@ -1,5 +1,7 @@
 package news.caughtup.caughtup.entities;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,17 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import news.caughtup.caughtup.R;
-
-/**
- * Created by jeff on 4/3/16.
- *
- * Temporary model used for prototyping.
- */
 public class User extends Resource implements ICaughtUpItem {
 
     //region Private instance variables
-    private int profileImageId = R.mipmap.profile_pic_1;
+    private String profileImageURL;
     private int userId;
     private String fullName;
     private int age;
@@ -87,12 +82,18 @@ public class User extends Resource implements ICaughtUpItem {
         } catch (JSONException ignored) {
             email = "";
         }
+        // Profile Picture
+        try {
+            profileImageURL = jsonObject.getString("profilePictureURL");
+        } catch (JSONException ignored) {
+            profileImageURL = "";
+        }
     }
     //endregion
 
     //region Setters
-    public void setProfileImageId(int profileImageId) {
-        this.profileImageId = profileImageId;
+    public void setProfileImageURL(String profileImageURL) {
+        this.profileImageURL = profileImageURL;
     }
 
     public void setFullName(String fullName) {
@@ -150,8 +151,8 @@ public class User extends Resource implements ICaughtUpItem {
     //endregion
 
     //region Getters
-    public int getProfileImageId() {
-        return profileImageId;
+    public String getProfileImageURL() {
+        return profileImageURL;
     }
 
     public int getUserId() {
