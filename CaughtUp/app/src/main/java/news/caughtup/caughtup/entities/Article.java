@@ -13,17 +13,9 @@ public class Article implements ICaughtUpItem {
     private int resourceId;
     private String title;
     private String date;
-    private int thumbnailID = R.mipmap.bbc_icon; //TODO: Get actual corresponding thumbnail
+    private int thumbnailID;
     private String summary;
     private Uri articleURI;
-
-    public Article(String title, String date, int thumbnailID, String summary, Uri articleURI) {
-        this.title = title;
-        this.date = date;
-        this.thumbnailID = thumbnailID;
-        this.summary = summary;
-        this.articleURI = articleURI;
-    }
 
     public Article(JSONObject jsonObject) throws JSONException {
         articleId = jsonObject.getInt("articleId");
@@ -32,6 +24,7 @@ public class Article implements ICaughtUpItem {
         date = jsonObject.getString("date");
         summary = jsonObject.getString("summary");
         articleURI = Uri.parse(jsonObject.getString("articleURI"));
+        thumbnailID = (articleURI.toString().contains("www.bbc.")) ? R.mipmap.bbc_icon : R.mipmap.cnn_icon;
     }
 
     public int getArticleId() {

@@ -11,21 +11,15 @@ public class NewsSource extends Resource implements ICaughtUpItem {
 
     private String baseUrl;
     private String description;
-    private int thumbnailId = R.mipmap.bbc_icon; // TODO: Get actual corresponding icon
+    private int thumbnailId;
 
     //region Constructors
-    public NewsSource(String name, String baseUrl, int thumbnailId, String description) {
-        super(name);
-        this.baseUrl = baseUrl;
-        this.thumbnailId = thumbnailId;
-        this.description = description;
-    }
-
     public NewsSource(JSONObject jsonObject) throws JSONException {
         super(jsonObject.getString("name"));
         setResourceId(jsonObject.getInt("resourceId"));
         baseUrl = jsonObject.getString("baseURL");
         description = jsonObject.getString("description");
+        thumbnailId = (name.toLowerCase().equals("cnn")) ? R.mipmap.cnn_icon : R.mipmap.bbc_icon;
     }
     //endregion
 
