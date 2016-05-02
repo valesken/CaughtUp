@@ -162,13 +162,6 @@
 
     </GridLayout>
 
-    <Button
-        android:id="@+id/edit_profile_change_password_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/change_password"
-        android:layout_gravity="center_horizontal"/>
-
     <EditText
         android:id="@+id/edit_profile_about_me_edit_text"
         android:layout_width="match_parent"
@@ -184,11 +177,34 @@
         android:scrollbars="vertical"
         android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:id="@+id/edit_profile_save_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/save_changes"
-        android:layout_gravity="center_horizontal"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <Button
+            android:id="@+id/edit_profile_change_password_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="3dp"
+            android:textColor="@android:color/white"
+            android:text="@string/change_password"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/custom_button_selector"/>
+
+        <Button
+            android:id="@+id/edit_profile_save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="3dp"
+            android:textColor="@android:color/white"
+            android:text="@string/save_changes"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/custom_button_selector"/>
+
+    </LinearLayout>
 
 </LinearLayout>

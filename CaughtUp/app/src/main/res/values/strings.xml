@@ -30,7 +30,7 @@
     <string name="edit_profile_age_hint">Age</string>
     <string name="edit_profile_gender_hint">Gender</string>
     <string name="edit_profile_about_me_hint">About me</string>
-    <string name="save_changes">Save</string>
+    <string name="save_changes">Save Changes</string>
     <string name="news_feed_no_articles_text">You\'re not currently following anyone! You should go to the search page and find someone to follow.</string>
 
     <!-- Data for populating Gender field -->
@@ -70,6 +70,8 @@
     <string name="wrong_old_password">Wrong old password.</string>
     <string name="user_not_found">User could not be found.</string>
     <string name="passwords_should_match">Passwords should match.</string>
+    <string name="update_user_server_error">Internal server error occured while trying to update your info.</string>
+    <string name="invalid_email_address">Invalid email address</string>
 
     <!-- Strings used for search context -->
     <string name="search_context_all_text">all</string>
