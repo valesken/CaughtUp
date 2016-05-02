@@ -209,15 +209,17 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
             public void onClick(DialogInterface dialog, int item) {
                 switch (items[item]) {
                     case "Share with Followers":
-                        Toast.makeText(activity,
-                                String.format("\"%s\" is now shared with your followers", article.getTitle()),
-                                Toast.LENGTH_SHORT).show();
+                        User user = HomeActivity.getCurrentUser();
+                        Callback callback = getShareCallback(article);
+                        String endpoint = String.format("/share?user_id=%d&article_id=%d", user.getUserId(),
+                                article.getArticleId());
+                        RestProxy.getProxy().postCall(endpoint, "", callback);
                         dialog.dismiss();
                         break;
                     case "Share on Facebook":
-                        String message = String.format("\"%s\" is now shared on Facebook", article.getTitle());
+                        String fbMessage = String.format("\"%s\" is now shared on Facebook", article.getTitle());
                         ISocialMediaManager fbAccessManager = new FacebookManager();
-                        fbAccessManager.share(message, article, activity);
+                        fbAccessManager.share(fbMessage, article, activity);
                         dialog.dismiss();
                         break;
                     case "Share on Twitter":
@@ -277,6 +279,22 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
                         followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
                         followButton.setTag(followTag); // Meaning next click will cause it to follow
                     }
+                } else {
+                    Toast.makeText(activity,
+                            activity.getResources().getString(R.string.follow_server_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+    }
+
+    private Callback getShareCallback(final Article article) {
+        return new Callback() {
+            @Override
+            public void process(ResponseObject responseObject) {
+                if (responseObject.getResponseCode() == 200) {
+                    String toastMsg = String.format("\"%s\" is now shared with your followers", article.getTitle());
+                    Toast.makeText(activity, toastMsg, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(activity,
                             activity.getResources().getString(R.string.follow_server_error),
