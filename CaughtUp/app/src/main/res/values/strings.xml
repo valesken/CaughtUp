@@ -26,10 +26,19 @@
     <string name="base_search_results_text">Search results for</string>
     <string name="edit_profile_location_hint">Location</string>
     <string name="edit_profile_fullname_hint">Full Name</string>
+    <string name="edit_profile_email_hint">Email</string>
     <string name="edit_profile_age_hint">Age</string>
     <string name="edit_profile_gender_hint">Gender</string>
     <string name="edit_profile_about_me_hint">About me</string>
+    <string name="save_changes">Save</string>
     <string name="news_feed_no_articles_text">You\'re not currently following anyone! You should go to the search page and find someone to follow.</string>
+
+    <!-- Data for populating Gender field -->
+    <string-array name="gender_array">
+        <item>none</item>
+        <item>male</item>
+        <item>female</item>
+    </string-array>
 
     <!-- Strings for test data -->
     <string name="test_techcrunch_url">http://techcrunch.com/2016/04/04/saleforce-acquires-metamind/</string>

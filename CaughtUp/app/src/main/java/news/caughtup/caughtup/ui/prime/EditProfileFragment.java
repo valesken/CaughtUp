@@ -6,23 +6,46 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import news.caughtup.caughtup.R;
+import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.ws.remote.Callback;
+import news.caughtup.caughtup.ws.remote.RestProxy;
 
 public class EditProfileFragment extends Fragment {
 
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
+    private User user;
+    private ImageView profilePicView;
+    private TextView userNameView;
+    private Spinner genderSpinner;
+    private EditText ageView;
+    private EditText fullNameView;
+    private EditText emailView;
+    private EditText locationView;
+    private EditText aboutMeView;
+
 
     private View rootView;
 
@@ -30,6 +53,26 @@ public class EditProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+
+        user = HomeActivity.getCurrentUser();
+        System.out.println("Email: " + user.getEmail());
+        System.out.println("Full Name: " + user.getFullName());
+        //get references to views region
+        profilePicView = (ImageView) rootView.findViewById(R.id.edit_profile_photo_image_view);
+        userNameView = (TextView) rootView.findViewById(R.id.edit_profile_username_text_view);
+        genderSpinner = (Spinner) rootView.findViewById(R.id.edit_profile_gender_edit_text);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.gender_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        genderSpinner.setAdapter(adapter);
+        ageView = (EditText) rootView.findViewById(R.id.edit_profile_age_edit_text);
+        fullNameView = (EditText) rootView.findViewById(R.id.edit_profile_full_name_edit_text);
+        emailView = (EditText) rootView.findViewById(R.id.edit_profile_email_edit_text);
+        locationView = (EditText) rootView.findViewById(R.id.edit_profile_location_edit_text);
+        aboutMeView = (EditText) rootView.findViewById(R.id.edit_profile_about_me_edit_text);
+        //end region
 
         setUpCurrentUserInfo();
 
@@ -42,6 +85,7 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+        //region setup button listeners
         Button changePasswordButton = (Button) rootView.findViewById(R.id.edit_profile_change_password_button);
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,14 +95,32 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+        Button saveChangesButton = (Button) rootView.findViewById(R.id.edit_profile_save_button);
+        saveChangesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RestProxy proxy = RestProxy.getProxy();
+                Callback callback = getUpdatedUserCallback();
+                JSONObject jsonObject = createJSON();
+                Log.e("JSON Object", jsonObject.toString());
+                if (!validateEmail(emailView.getText().toString())) {
+                    Toast.makeText(getActivity(), "The email address is invalid",
+                            Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    proxy.putCall(String.format("/profile/%s?picture=false", user.getName()),
+                            jsonObject.toString(), callback);
+                }
+            }
+        });
+        //end region
+
         return rootView;
     }
 
     private void setUpCurrentUserInfo() {
-        User user = HomeActivity.getCurrentUser();
 
         // Profile Picture
-        ImageView profilePicView = (ImageView) rootView.findViewById(R.id.edit_profile_photo_image_view);
         int imageResourceId = user.getProfileImageId();
         if(imageResourceId > 0) {
             profilePicView.setImageDrawable(getActivity().getResources().getDrawable(imageResourceId, null));
@@ -67,44 +129,175 @@ public class EditProfileFragment extends Fragment {
         }
 
         // Username
-        TextView userNameView = (TextView) rootView.findViewById(R.id.edit_profile_username_text_view);
         userNameView.setText(user.getName());
 
         // Gender
-        EditText genderView = (EditText) rootView.findViewById(R.id.edit_profile_gender_edit_text);
-        char gender = user.getGender();
-        if(gender != 'x') {
-            genderView.setText(Character.toString(gender));
+        String gender = user.getGender();
+        if(gender != null && !gender.isEmpty()) {
+            switch (gender.toLowerCase()) {
+                case "male":
+                    genderSpinner.setSelection(1);
+                    break;
+                case "female":
+                    genderSpinner.setSelection(2);
+                    break;
+                default:
+                    genderSpinner.setSelection(0);
+                    break;
+            }
         }
 
         // Age
-        EditText ageView = (EditText) rootView.findViewById(R.id.edit_profile_age_edit_text);
         int age = user.getAge();
         if(age > 1) {
             ageView.setText(String.format("%d", age));
         }
 
         // Full Name
-        EditText fullNameView = (EditText) rootView.findViewById(R.id.edit_profile_full_name_edit_text);
         String fullName = user.getFullName();
         if(fullName != null && !fullName.isEmpty()) {
             fullNameView.setText(user.getFullName());
         }
 
+        // Email
+        String email = user.getEmail();
+        if(email != null && !email.isEmpty()) {
+            emailView.setText(email);
+        }
+
         // Location
-        EditText locationView = (EditText) rootView.findViewById(R.id.edit_profile_location_edit_text);
         String location = user.getLocation();
         if(location != null && !location.isEmpty()) {
             locationView.setText(location);
         }
 
         // About me
-        EditText aboutMeView = (EditText) rootView.findViewById(R.id.edit_profile_about_me_edit_text);
         String aboutMe = user.getAboutMe();
         if(aboutMe != null && !aboutMe.isEmpty()) {
             aboutMeView.setText(aboutMe);
         }
     }
+
+    private Callback getUpdatedUserCallback() {
+        return new Callback() {
+            @Override
+            public void process(ResponseObject responseObject) {
+                if (responseObject.getResponseCode() == 200) {
+                    JSONObject jsonObject = responseObject.getJsonObject();
+                    try {
+                        if (jsonObject.getString("message").equals("Success")) {
+                            updateUser();
+                        } else {
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    getActivity().getResources().getString(R.string.get_user_server_error),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getActivity().getResources().getString(R.string.get_user_server_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+    }
+
+    private void updateUser() {
+        // Gender
+        String gender = genderSpinner.getSelectedItem().toString();
+        if(gender != null && !gender.isEmpty()) {
+            user.setGender(gender);
+        }
+
+        // Age
+        int age = Integer.parseInt(ageView.getText().toString());
+        if (age > 1) {
+            user.setAge(age);
+        }
+
+        // Full Name
+        String fullName = fullNameView.getText().toString();
+        if(fullName != null && !fullName.isEmpty()) {
+            user.setFullName(fullName);
+        }
+
+        // Email
+        String email = emailView.getText().toString();
+        if(email != null && !email.isEmpty()) {
+            user.setEmail(email);
+        }
+
+        // Location
+        String location = locationView.getText().toString();
+        if(location != null && !location.isEmpty()) {
+            user.setLocation(location);
+        }
+
+        // About me
+        String aboutMe = aboutMeView.getText().toString();
+        if(aboutMe != null && !aboutMe.isEmpty()) {
+            user.setAboutMe(aboutMe);
+        }
+    }
+
+    private JSONObject createJSON() {
+        JSONObject jsonObject = new JSONObject();
+        // Gender
+        try {
+            String gender = genderSpinner.getSelectedItem().toString();
+            if(gender != null && !gender.isEmpty()) {
+                jsonObject.put("gender", gender);
+            }
+
+            // Age
+            int age = Integer.parseInt(ageView.getText().toString());
+            if (age > 1) {
+                jsonObject.put("age", age);
+            }
+
+            // Full Name
+            String fullName = fullNameView.getText().toString();
+            if(fullName != null && !fullName.isEmpty()) {
+                jsonObject.put("fullName", fullName);
+            }
+
+            // Email
+            String email = emailView.getText().toString();
+            if(email != null && !email.isEmpty()) {
+                jsonObject.put("email", email);
+            }
+
+            // Location
+            String location = locationView.getText().toString();
+            if(location != null && !location.isEmpty()) {
+                jsonObject.put("location", location);
+            }
+
+            // About me
+            String aboutMe = aboutMeView.getText().toString();
+            if(aboutMe != null && !aboutMe.isEmpty()) {
+                jsonObject.put("aboutMe", aboutMe);
+            }
+            return jsonObject;
+        } catch (JSONException e) {
+            Log.e("JSONException", "Couldn't create JSON with updated user");
+            return null;
+        }
+    }
+
+    /**
+     * Validate an input string as an email
+     * @param email
+     * @return
+     */
+    private boolean validateEmail(String email) {
+        Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
 
     private void selectPhoto() {
         final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
