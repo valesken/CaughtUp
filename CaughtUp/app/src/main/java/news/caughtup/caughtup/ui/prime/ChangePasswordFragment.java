@@ -88,7 +88,7 @@ public class ChangePasswordFragment extends Fragment {
                 } else if (responseObject.getResponseCode() == 200) {
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
-                        String responseMessage = jsonObject.getString("username");
+                        String responseMessage = jsonObject.getString("message");
                         if (!responseMessage.equals("Success")) {
                             Toast.makeText(getActivity().getApplicationContext(),
                                     getResources().getString(R.string.change_password_server_error),
