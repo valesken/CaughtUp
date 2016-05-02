@@ -56,6 +56,7 @@ public class EditProfileFragment extends Fragment {
 
     private void setUpCurrentUserInfo() {
         User user = HomeActivity.getCurrentUser();
+
         // Profile Picture
         ImageView profileImageView = (ImageView) rootView.findViewById(R.id.edit_profile_photo_image_view);
         int imageResourceId = user.getProfileImageId();

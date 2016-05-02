@@ -63,5 +63,6 @@
     <string name="search_context_user_text">user</string>
     <string name="search_context_article_text">article</string>
     <string name="search_context_news_source_text">news source</string>
+    <string name="get_user_server_error">Could not get user from server.</string>
 
 </resources>
