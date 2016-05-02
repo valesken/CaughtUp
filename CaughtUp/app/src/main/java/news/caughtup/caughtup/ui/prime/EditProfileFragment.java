@@ -2,8 +2,16 @@ package news.caughtup.caughtup.ui.prime;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -23,9 +31,12 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.fabric.sdk.android.services.network.HttpRequest;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
@@ -324,5 +335,76 @@ public class EditProfileFragment extends Fragment {
             }
         });
         builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == getActivity().RESULT_OK) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                Bitmap bitmap = null;
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                if (requestCode == REQUEST_CAMERA) {
+                    Log.e("Inside REQUEST_CAMERA: ", "Handling an image");
+                    bitmap = (Bitmap) data.getExtras().get("data");
+                } else if (requestCode == SELECT_FILE) {
+                    Uri selectedImageUri = data.getData();
+                    String[] projection = {MediaStore.MediaColumns.DATA};
+                    CursorLoader cursorLoader = new CursorLoader(getActivity(), selectedImageUri,
+                            projection, null, null, null);
+                    Cursor cursor = cursorLoader.loadInBackground();
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+                    cursor.moveToFirst();
+                    String selectedImagePath = cursor.getString(column_index);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    bitmap = BitmapFactory.decodeFile(selectedImagePath, options);
+                }
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream); //compress to which format you want.
+                byte[] byte_arr = stream.toByteArray();
+                String imageStr = HttpRequest.Base64.encodeBytes(byte_arr);
+                jsonObject.put("image", imageStr);
+                jsonObject.put("type", "jpeg");
+                Callback callback = getUploadImageCallback();
+                RestProxy proxy = RestProxy.getProxy();
+                proxy.putCall(String.format("/profile/%s?picture=true", user.getName()), jsonObject.toString(), callback);
+            } catch (JSONException e) {
+                Log.e("JSONException", "Could not form correct JSON object");
+            }
+        }
+    }
+
+    private Callback getUploadImageCallback() {
+        return new Callback() {
+            @Override
+            public void process(ResponseObject responseObject) {
+                if (responseObject.getResponseCode() == 200) {
+                    JSONObject jsonObject = responseObject.getJsonObject();
+                    try {
+                        String profilePicURL = jsonObject.getString("profile_picture_url");
+                        Log.e("ProfilePicURl: ", profilePicURL);
+                        //int imageId = getImageId();
+                        //profilePicView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.profile_pic_2, null));
+                        //user.setProfileImageId(imageId);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getActivity().getResources().getString(R.string.update_user_server_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+    }
+
+    private int getImageId() {
+        Random r = new Random();
+        int n;
+        do {
+            n = r.nextInt(Integer.MAX_VALUE);
+        } while (getResources().getDrawable(n, null) != null);
+        return n;
     }
 }
