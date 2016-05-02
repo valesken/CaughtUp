@@ -1,10 +1,8 @@
 package news.caughtup.caughtup.ui.prime;
 
 import android.app.ListFragment;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -21,7 +19,6 @@ import news.caughtup.caughtup.entities.Resource;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.Users;
-import news.caughtup.caughtup.util.StringRetriever;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
@@ -55,7 +52,7 @@ public class NewsFeedFragment extends ListFragment {
                                 JSONObject jsonUser = userArray.getJSONObject(i);
                                 User user = new User(jsonUser);
                                 Users.getInstance().addToUserList(user);
-                                currentUser.addFollowing(user);
+                                currentUser.follow(user);
                             }
                         }
                         // News Sources
@@ -64,7 +61,7 @@ public class NewsFeedFragment extends ListFragment {
                             for(int i = 0; i < newsSourceArray.length(); ++i) {
                                 JSONObject jsonNewsSource = newsSourceArray.getJSONObject(i);
                                 NewsSource newsSource = new NewsSource(jsonNewsSource);
-                                currentUser.addFollowing(newsSource);
+                                currentUser.follow(newsSource);
                             }
                         }
 

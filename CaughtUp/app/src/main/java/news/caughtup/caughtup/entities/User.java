@@ -127,8 +127,12 @@ public class User extends Resource implements ICaughtUpItem {
         followingMap.clear();
     }
 
-    public void addFollowing(Resource resource) {
+    public void follow(Resource resource) {
         followingMap.put(resource.getResourceId(), resource);
+    }
+
+    public void unfollow(int resourceId) {
+        followingMap.remove(resourceId);
     }
     //endregion
 

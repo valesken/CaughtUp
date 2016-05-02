@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -23,11 +22,14 @@ import news.caughtup.caughtup.entities.Article;
 import news.caughtup.caughtup.entities.ICaughtUpItem;
 import news.caughtup.caughtup.entities.NewsSource;
 import news.caughtup.caughtup.entities.Resource;
+import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.util.Constants;
 import news.caughtup.caughtup.util.StringRetriever;
+import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.FacebookManager;
 import news.caughtup.caughtup.ws.remote.ISocialMediaManager;
+import news.caughtup.caughtup.ws.remote.RestProxy;
 import news.caughtup.caughtup.ws.remote.TwitterManager;
 
 public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
@@ -139,10 +141,10 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         User currentUser = HomeActivity.getCurrentUser();
         if(currentUser.isFollowing(user.getResourceId())) {
             followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.unfollow_icon, null));
-            followButton.setTag(retriever.getStringById(Constants.UNFOLLOW_TAG));
+            followButton.setTag(retriever.getStringById(Constants.UNFOLLOW_TAG)); // Meaning next click will unfollow
         } else {
             followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
-            followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG));
+            followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG)); // Meaning next click will follow
         }
         setFollowButtonListener(followButton, user);
 
@@ -188,10 +190,10 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         User currentUser = HomeActivity.getCurrentUser();
         if(currentUser.isFollowing(newsSource.getResourceId())) {
             followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.unfollow_icon, null));
-            followButton.setTag(retriever.getStringById(Constants.UNFOLLOW_TAG));
+            followButton.setTag(retriever.getStringById(Constants.UNFOLLOW_TAG)); // Meaning next click will unfollow
         } else {
             followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
-            followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG));
+            followButton.setTag(retriever.getStringById(Constants.FOLLOW_TAG)); // Meaning next click will follow
         }
         setFollowButtonListener(followButton, newsSource);
 
@@ -238,22 +240,49 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String followTag = retriever.getStringById(Constants.FOLLOW_TAG);
-                String unfollowTag = retriever.getStringById(Constants.UNFOLLOW_TAG);
-                if (followButton.getTag().equals(followTag)) {
-                    Toast.makeText(activity.getApplicationContext(),
-                            String.format("Now following %s!", resource.getName()),
-                            Toast.LENGTH_SHORT).show();
-                    followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.unfollow_icon, null));
-                    followButton.setTag(unfollowTag);
+                User currentUser = HomeActivity.getCurrentUser();
+                Callback callback = getFollowCallback(followButton, resource);
+                RestProxy proxy = RestProxy.getProxy();
+                if (followButton.getTag().equals(retriever.getStringById(Constants.FOLLOW_TAG))) {
+                    proxy.postCall(String.format("/follow?user_id=%d&resource_id=%d", currentUser.getUserId(),
+                            resource.getResourceId()), "", callback);
                 } else {
-                    Toast.makeText(activity.getApplicationContext(),
-                            String.format("No longer following %s.", resource.getName()),
-                            Toast.LENGTH_SHORT).show();
-                    followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
-                    followButton.setTag(followTag);
+                    proxy.deleteCall(String.format("/follow?user_id=%d&resource_id=%d", currentUser.getUserId(),
+                            resource.getResourceId()), "", callback);
                 }
             }
         });
+    }
+
+    private Callback getFollowCallback(final ImageButton followButton, final Resource resource) {
+        return new Callback() {
+            @Override
+            public void process(ResponseObject responseObject) {
+                if (responseObject.getResponseCode() == 200) {
+                    User currentUser = HomeActivity.getCurrentUser();
+                    String followTag = retriever.getStringById(Constants.FOLLOW_TAG);
+                    String unfollowTag = retriever.getStringById(Constants.UNFOLLOW_TAG);
+                    if (followButton.getTag().equals(followTag)) {
+                        currentUser.follow(resource);
+                        Toast.makeText(activity.getApplicationContext(),
+                                String.format("Now following %s!", resource.getName()),
+                                Toast.LENGTH_SHORT).show();
+                        followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.unfollow_icon, null));
+                        followButton.setTag(unfollowTag); // Meaning next click will cause it to unfollow
+                    } else {
+                        currentUser.unfollow(resource.getResourceId());
+                        Toast.makeText(activity.getApplicationContext(),
+                                String.format("No longer following %s.", resource.getName()),
+                                Toast.LENGTH_SHORT).show();
+                        followButton.setImageDrawable(activity.getResources().getDrawable(R.drawable.add_icon, null));
+                        followButton.setTag(followTag); // Meaning next click will cause it to follow
+                    }
+                } else {
+                    Toast.makeText(activity,
+                            activity.getResources().getString(R.string.follow_server_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        };
     }
 }

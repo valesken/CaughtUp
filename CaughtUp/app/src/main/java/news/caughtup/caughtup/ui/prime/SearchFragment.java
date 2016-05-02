@@ -1,14 +1,11 @@
 package news.caughtup.caughtup.ui.prime;
 
 import android.app.Fragment;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,10 +40,7 @@ public class SearchFragment extends Fragment {
         Bundle args = getArguments();
         retriever = StringRetriever.getInstance();
 
-        // Set up Results String
         makeQuery(args.getString("query"));
-
-        // Set up Results
 
         return rootView;
     }

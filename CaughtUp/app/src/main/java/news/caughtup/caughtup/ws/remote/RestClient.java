@@ -1,7 +1,6 @@
 package news.caughtup.caughtup.ws.remote;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,10 +54,18 @@ public class RestClient implements IRest {
                 URL url = new URL(server_url + params[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 switch (params[2]) {
-                    case "POST": urlConnection.setRequestMethod("POST");
-                    case "PUT": urlConnection.setRequestMethod("PUT");
-                    case "DELETE": urlConnection.setRequestMethod("DELETE");
-                    default: urlConnection.setRequestMethod("GET");
+                    case "POST":
+                        urlConnection.setRequestMethod("POST");
+                        break;
+                    case "PUT":
+                        urlConnection.setRequestMethod("PUT");
+                        break;
+                    case "DELETE":
+                        urlConnection.setRequestMethod("DELETE");
+                        break;
+                    default:
+                        urlConnection.setRequestMethod("GET");
+                        break;
                 }
                 if (!params[2].equals("GET")) {
                     urlConnection.setChunkedStreamingMode(0);

@@ -61,4 +61,5 @@
     <string name="search_server_error">Could not process your search query. Please try again.</string>
     <string name="news_feed_following_server_error">Cannot get the resources you follow.</string>
     <string name="news_feed_article_server_error">Error occured while fetching articles from resources you follow.</string>
+    <string name="follow_server_error">Internal server error occured while trying to follow/unfollow a resource.</string>
 </resources>

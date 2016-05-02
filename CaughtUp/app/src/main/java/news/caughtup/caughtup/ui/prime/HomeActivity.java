@@ -34,7 +34,6 @@ import java.util.Stack;
 import io.fabric.sdk.android.Fabric;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.User;
-import news.caughtup.caughtup.entities.Users;
 import news.caughtup.caughtup.ui.login.LoginActivity;
 import news.caughtup.caughtup.util.Constants;
 import news.caughtup.caughtup.util.StringRetriever;
