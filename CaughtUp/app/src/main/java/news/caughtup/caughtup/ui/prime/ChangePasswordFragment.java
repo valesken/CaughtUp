@@ -21,6 +21,9 @@ import news.caughtup.caughtup.util.StringRetriever;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
+/**
+ * @author CaughtUp
+ */
 public class ChangePasswordFragment extends Fragment {
     private EditText oldPasswordView;
     private EditText newPasswordView;
@@ -36,17 +39,20 @@ public class ChangePasswordFragment extends Fragment {
         newPasswordView = (EditText) rootView.findViewById(R.id.change_password_new_password_edit_text);
         confirmPasswordView = (EditText) rootView.findViewById(R.id.change_password_confirm_password_edit_text);
 
+        // Set up listener for the save password button
         Button saveButton = (Button) rootView.findViewById(R.id.change_password_save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String newPassword = newPasswordView.getText().toString();
                 String confirmPassword = confirmPasswordView.getText().toString();
+                // If the passwords don't match inform the user
                 if (!newPassword.equals(confirmPassword)) {
                     Toast.makeText(getActivity().getApplicationContext(),
                             getResources().getString(R.string.passwords_should_match),
                             Toast.LENGTH_LONG).show();
                 } else {
+                    // Make the REST call to update the password
                     RestProxy proxy = RestProxy.getProxy();
                     User user = HomeActivity.getCurrentUser();
                     Callback callback = getChangePasswordCallback();
@@ -62,6 +68,7 @@ public class ChangePasswordFragment extends Fragment {
             }
         });
 
+        // Set up listener for the cancel button
         Button cancelButton = (Button) rootView.findViewById(R.id.change_password_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,10 +80,17 @@ public class ChangePasswordFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Create the callback to be invoked after the change password request has been processed
+     * by the server
+     * @return
+     */
     private Callback getChangePasswordCallback() {
         return new Callback() {
             @Override
             public void process(ResponseObject responseObject) {
+                // Handle the different responses by the server
+                // by displaying the appropriate message
                 if (responseObject.getResponseCode() == 404) {
                     Toast.makeText(getActivity().getApplicationContext(),
                             getResources().getString(R.string.user_not_found),

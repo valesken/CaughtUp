@@ -28,6 +28,9 @@ import news.caughtup.caughtup.entities.Users;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
+/**
+ * @author CaughtUp
+ */
 public class NewsFeedFragment extends Fragment {
 
     private View rootView;
@@ -45,6 +48,10 @@ public class NewsFeedFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Callback to be executed after we get the resources followed by the current user
+     * @return
+     */
     private Callback getFollowingCallback() {
         return new Callback() {
             @Override
@@ -54,7 +61,7 @@ public class NewsFeedFragment extends Fragment {
                     try {
                         User currentUser = HomeActivity.getCurrentUser();
                         currentUser.clearFollowing();
-                        // Users
+                        // Set up Users followed by the current user
                         if(jsonObject.has("users") && jsonObject.get("users") != null) {
                             JSONArray userArray = jsonObject.getJSONArray("users");
                             for(int i = 0; i < userArray.length(); ++i) {
@@ -64,7 +71,7 @@ public class NewsFeedFragment extends Fragment {
                                 currentUser.follow(user);
                             }
                         }
-                        // News Sources
+                        // Set up News Sources followed by the current user
                         if(jsonObject.has("news_sources") && jsonObject.get("news_sources") != null) {
                             JSONArray newsSourceArray = jsonObject.getJSONArray("news_sources");
                             for(int i = 0; i < newsSourceArray.length(); ++i) {
@@ -75,6 +82,7 @@ public class NewsFeedFragment extends Fragment {
                         }
 
                         dataArray.clear();
+                        // Retrieve articles that belong the news sources followed by the user
                         for(Resource resource : currentUser.getFollowing()) {
                             Callback callback = getArticlesCallback();
                             RestProxy proxy = RestProxy.getProxy();
@@ -100,11 +108,16 @@ public class NewsFeedFragment extends Fragment {
         };
     }
 
+    /**
+     * Callback to be exectuted after we get the articles related to news sources from server
+     * @return
+     */
     private Callback getArticlesCallback() {
         return new Callback() {
             @Override
             public void process(ResponseObject responseObject) {
                 if (responseObject.getResponseCode() == 200) {
+                    // On success update the list of articles showed to the user
                     JSONObject jsonObject = responseObject.getJsonObject();
                     ListView newsFeedList = (ListView) rootView.findViewById(R.id.news_feed_list);
                     TextView noArticlesTextView = (TextView) rootView.findViewById(R.id.news_feed_no_articles_text);
