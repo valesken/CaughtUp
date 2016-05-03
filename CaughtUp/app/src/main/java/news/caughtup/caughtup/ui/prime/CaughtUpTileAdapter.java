@@ -33,6 +33,10 @@ import news.caughtup.caughtup.ws.remote.ISocialMediaManager;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 import news.caughtup.caughtup.ws.remote.TwitterManager;
 
+/**
+ * @author CaughtUp
+ * Custom Tile Adapter for users, news_sources and articles
+ */
 public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
 
     private Activity activity;
@@ -46,6 +50,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ICaughtUpItem item = getItem(position);
+        // Get the correct View based on the item received
         if(item instanceof Article) {
             return getArticleView(convertView, item);
         }
@@ -201,6 +206,10 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         return convertView;
     }
 
+    /**
+     * Create a custom dialog to share on Twitter, Facebook or with followers
+     * @param article
+     */
     private void launchShareDialog(final Article article) {
         final String[] items = { "Share with Followers", "Share on Facebook", "Share on Twitter", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -210,6 +219,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
             public void onClick(DialogInterface dialog, int item) {
                 switch (items[item]) {
                     case "Share with Followers":
+                        // Make a REST call to the server for handling "Share with followers"
                         User user = HomeActivity.getCurrentUser();
                         Callback callback = getShareCallback(article);
                         String endpoint = String.format("/share?user_id=%d&article_id=%d", user.getUserId(),
@@ -218,12 +228,14 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
                         dialog.dismiss();
                         break;
                     case "Share on Facebook":
+                        // Share on Facebook
                         String fbMessage = String.format("\"%s\" is now shared on Facebook", article.getTitle());
                         ISocialMediaManager fbAccessManager = new FacebookManager();
                         fbAccessManager.share(fbMessage, article, activity);
                         dialog.dismiss();
                         break;
                     case "Share on Twitter":
+                        // Share on Twitter
                         String tweet = String.format("Checkout \"%s\"!", article.getTitle());
                         ISocialMediaManager twitterAccessManager = new TwitterManager();
                         twitterAccessManager.share(tweet, article, activity);
@@ -239,10 +251,16 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         builder.show();
     }
 
+    /**
+     * Set up a listener for follow/unfollow
+     * @param followButton
+     * @param resource
+     */
     private void setFollowButtonListener(final ImageButton followButton, final Resource resource) {
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Make the appropriate REST call based on the situation
                 User currentUser = HomeActivity.getCurrentUser();
                 Callback callback = getFollowCallback(followButton, resource);
                 RestProxy proxy = RestProxy.getProxy();
@@ -257,6 +275,12 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         });
     }
 
+    /**
+     * Create the callback to be invoked after we get the result from the server
+     * @param followButton
+     * @param resource
+     * @return
+     */
     private Callback getFollowCallback(final ImageButton followButton, final Resource resource) {
         return new Callback() {
             @Override
@@ -265,6 +289,7 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
                     User currentUser = HomeActivity.getCurrentUser();
                     String followTag = retriever.getStringById(Constants.FOLLOW_TAG);
                     String unfollowTag = retriever.getStringById(Constants.UNFOLLOW_TAG);
+                    // Take appropriate action based on follow/unfollow action
                     if (followButton.getTag().equals(followTag)) {
                         currentUser.follow(resource);
                         Toast.makeText(activity.getApplicationContext(),
@@ -289,11 +314,17 @@ public class CaughtUpTileAdapter extends ArrayAdapter<ICaughtUpItem> {
         };
     }
 
+    /**
+     * Create the callback to be invoked after getting the result for sharing an article
+     * @param article
+     * @return
+     */
     private Callback getShareCallback(final Article article) {
         return new Callback() {
             @Override
             public void process(ResponseObject responseObject) {
                 if (responseObject.getResponseCode() == 200) {
+                    // Successful sharing with followers
                     String toastMsg = String.format("\"%s\" is now shared with your followers", article.getTitle());
                     Toast.makeText(activity, toastMsg, Toast.LENGTH_SHORT).show();
                 } else {

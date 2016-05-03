@@ -38,6 +38,9 @@ import news.caughtup.caughtup.ui.login.LoginActivity;
 import news.caughtup.caughtup.util.Constants;
 import news.caughtup.caughtup.util.StringRetriever;
 
+/**
+ * @author CaughtUp
+ */
 public class HomeActivity extends AppCompatActivity {
 
     private static FragmentManager fm;
@@ -234,6 +237,11 @@ public class HomeActivity extends AppCompatActivity {
     //endregion
 
     //region private helper methods
+
+    /**
+     * Helper method to define the current search context
+     * @param searchContext
+     */
     private void setUpSearchContext(final TextView searchContext) {
         searchContexts.add(searchContext);
         searchContext.setOnTouchListener(new View.OnTouchListener() {
@@ -252,6 +260,9 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Helper method to set up the info of the currently logged in user
+     */
     private void setUpCurrentUser() {
         try {
             Intent intent = getIntent();

@@ -44,6 +44,9 @@ import news.caughtup.caughtup.util.ImageManager;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
+/**
+ * @author CaughtUp
+ */
 public class EditProfileFragment extends Fragment {
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
@@ -86,6 +89,7 @@ public class EditProfileFragment extends Fragment {
 
         setUpCurrentUserInfo();
 
+        // Set up an on touch listener for the profile picture
         RelativeLayout editProfilePicture = (RelativeLayout) rootView.findViewById(R.id.edit_profile_picture_relative_layout);
         editProfilePicture.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -100,19 +104,23 @@ public class EditProfileFragment extends Fragment {
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Create the change password listener when the button is pressed
                 ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
                 HomeActivity.executeTransaction(changePasswordFragment, "change_password", R.string.change_password_title);
             }
         });
 
+        // Set up listener for save changes button
         Button saveChangesButton = (Button) rootView.findViewById(R.id.edit_profile_save_button);
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Make the appropriate REST call to update user's info
                 RestProxy proxy = RestProxy.getProxy();
                 Callback callback = getUpdatedUserCallback();
                 JSONObject jsonObject = createJSON();
                 Log.e("JSON Object", jsonObject.toString());
+                // If email is not valid, print a Toast message to the user
                 if (!validateEmail(emailView.getText().toString())) {
                     Toast.makeText(getActivity(),
                             getActivity().getResources().getString(R.string.invalid_email_address),
@@ -129,6 +137,9 @@ public class EditProfileFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Helper method to populate EditTexts with the user's attributes
+     */
     private void setUpCurrentUserInfo() {
         loadProfilePicture();
 
@@ -182,6 +193,10 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Callback to be executed after the user's info has been updated on the server
+     * @return
+     */
     private Callback getUpdatedUserCallback() {
         return new Callback() {
             @Override
@@ -190,6 +205,7 @@ public class EditProfileFragment extends Fragment {
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
                         if (jsonObject.getString("message").equals("Success")) {
+                            // On success update the user's info with the new values
                             updateUser();
                         } else {
                             Toast.makeText(getActivity().getApplicationContext(),
@@ -208,6 +224,9 @@ public class EditProfileFragment extends Fragment {
         };
     }
 
+    /**
+     * Helper method to update the user's info using the values of EditTexts
+     */
     private void updateUser() {
         // Gender
         String gender = genderSpinner.getSelectedItem().toString();
@@ -251,6 +270,10 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Create a JSON object with the fields that were updated to send to the server
+     * @return
+     */
     private JSONObject createJSON() {
         JSONObject jsonObject = new JSONObject();
         // Gender
@@ -319,7 +342,10 @@ public class EditProfileFragment extends Fragment {
         return m.matches();
     }
 
-
+    /**
+     * Custom share dialog box for choosing a profile picture
+     * User can choose to take a photo or upload one from the gallery
+     */
     private void selectPhoto() {
         final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -351,6 +377,8 @@ public class EditProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == getActivity().RESULT_OK) {
             JSONObject jsonObject = new JSONObject();
+            // After the user has chosen the picture, take it and create a base64 string that
+            // will be sent over to the server to be stored
             try {
                 Bitmap bitmap = null;
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -368,6 +396,7 @@ public class EditProfileFragment extends Fragment {
                     bitmap = BitmapFactory.decodeFile(imagePath);
                     System.out.println("After SELECT_FILE");
                 }
+                // Create the base64 string of the image and make the REST call to the server
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream); //compress to which format you want.
                 byte[] byte_arr = stream.toByteArray();
                 String imageStr = HttpRequest.Base64.encodeBytes(byte_arr);
@@ -382,6 +411,10 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Callback to be executed after the image has been sent to the server
+     * @return
+     */
     private Callback getUploadImageCallback() {
         return new Callback() {
             @Override
@@ -389,6 +422,7 @@ public class EditProfileFragment extends Fragment {
                 if (responseObject.getResponseCode() == 200) {
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
+                        // On success update the profile picture of the user
                         String profilePicURL = jsonObject.getString("profile_picture_url");
                         user.setProfileImageURL(profilePicURL);
                         loadProfilePicture();
@@ -404,6 +438,9 @@ public class EditProfileFragment extends Fragment {
         };
     }
 
+    /**
+     * Method to load the profile picture from a url that we get from the server
+     */
     private void loadProfilePicture(){
         new ImageManager(profilePicView, getActivity(), user.getProfileImageURL());
     }

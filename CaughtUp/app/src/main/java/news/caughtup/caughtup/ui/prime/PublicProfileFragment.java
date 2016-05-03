@@ -31,6 +31,9 @@ import news.caughtup.caughtup.util.ImageManager;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
+/**
+ * @author CaughtUp
+ */
 public class PublicProfileFragment extends Fragment {
 
     private View rootView;
@@ -61,6 +64,10 @@ public class PublicProfileFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Callback to be executed when we get the user object back
+     * @return
+     */
     private Callback getUserCallback() {
         return new Callback() {
             @Override
@@ -68,6 +75,7 @@ public class PublicProfileFragment extends Fragment {
                 if (responseObject.getResponseCode() == 200) {
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
+                        // On success set up the user and his/her followers
                         user = new User(jsonObject.getJSONObject("profile"));
                         JSONArray followers = jsonObject.getJSONArray("followers");
                         for(int i = 0; i < followers.length(); ++i) {
@@ -86,6 +94,10 @@ public class PublicProfileFragment extends Fragment {
         };
     }
 
+    /**
+     * Helper method to set a message for the number of followers
+     * @param followers
+     */
     private void setFollowersMessage(List<User> followers) {
         String followersMsg = String.format("%s has %d followers",
                 user.getName(),
@@ -94,6 +106,9 @@ public class PublicProfileFragment extends Fragment {
         followersTextView.setText(followersMsg);
     }
 
+    /**
+     * Helper method to setup the info of each user
+     */
     private void setUpUser() {
         if(user != null) {
             // UserName
@@ -173,6 +188,10 @@ public class PublicProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Helper method to start following a user
+     * @param follower
+     */
     private void addFollower(final User follower) {
         LinearLayout followerLayout = new LinearLayout(context);
         followerLayout.setOrientation(LinearLayout.VERTICAL);
@@ -210,6 +229,11 @@ public class PublicProfileFragment extends Fragment {
         followersMap.put(follower.getName(), followerLayout);
     }
 
+    /**
+     * Callback to be executed after we get the followers of a user
+     * @param userFollowButton
+     * @return
+     */
     private Callback getFollowCallback(final TextView userFollowButton) {
         return new Callback() {
             @Override
@@ -217,6 +241,7 @@ public class PublicProfileFragment extends Fragment {
                 if (responseObject.getResponseCode() == 200) {
                     User currentUser = HomeActivity.getCurrentUser();
                     String label = userFollowButton.getText().toString();
+                    // Update followers based on follow/unfollow action
                     if (label.equals(getResources().getString(R.string.follow_me_button_text))) {
                         addFollower(currentUser);
                         user.addFollower(currentUser);

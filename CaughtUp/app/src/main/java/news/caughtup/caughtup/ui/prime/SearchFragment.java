@@ -31,6 +31,9 @@ import news.caughtup.caughtup.util.StringRetriever;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
+/**
+ * @author CaughtUp
+ */
 public class SearchFragment extends Fragment {
 
     private View rootView;
@@ -53,6 +56,11 @@ public class SearchFragment extends Fragment {
         return query;
     }
 
+    /**
+     * Method to create a query to be sent to the server
+     * Currently supporting only single-keyword queries
+     * @param query
+     */
     public void makeQuery(String query) {
         this.query = query;
         if(query.split(" ").length > 1) {
@@ -68,11 +76,21 @@ public class SearchFragment extends Fragment {
         }
     }
 
+    /**
+     * Make the REST call to the back-end to get the results
+     * @param callback
+     * @param query
+     * @param searchContext
+     */
     private void makeSearchCall(Callback callback, String query, String searchContext) {
         RestProxy proxy = RestProxy.getProxy();
         proxy.getCall(String.format("/search?keyword=%s&context=%s", query, searchContext), "", callback);
     }
 
+    /**
+     * Helper method to build the result strings displayed to the user
+     * @param query
+     */
     private void setResultsString(String query) {
         TextView searchResultsText = (TextView) rootView.findViewById(R.id.search_results_text);
         StringBuilder builder = new StringBuilder(retriever.getStringById(R.string.base_search_results_text));
@@ -84,6 +102,10 @@ public class SearchFragment extends Fragment {
         searchResultsText.setText(builder.toString());
     }
 
+    /**
+     * Callback to be executed when we get back the results for a search query
+     * @return
+     */
     private Callback getSearchCallback() {
         return new Callback() {
             @Override
@@ -92,7 +114,7 @@ public class SearchFragment extends Fragment {
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
                         dataArray.clear();
-                        // Users
+                        // Set up Users that were returned
                         if(jsonObject.has("users") && jsonObject.get("users") != null) {
                             JSONArray userArray = jsonObject.getJSONArray("users");
                             for(int i = 0; i < userArray.length(); ++i) {
@@ -102,7 +124,7 @@ public class SearchFragment extends Fragment {
                                 dataArray.add(user);
                             }
                         }
-                        // Articles
+                        // Set up Articles that were returned
                         if(jsonObject.has("articles") && jsonObject.get("articles") != null) {
                             JSONArray articleArray = jsonObject.getJSONArray("articles");
                             for(int i = 0; i < articleArray.length(); ++i) {
@@ -111,7 +133,7 @@ public class SearchFragment extends Fragment {
                                 dataArray.add(article);
                             }
                         }
-                        // News Sources
+                        // Set up News Sources that were returned
                         if(jsonObject.has("news_sources") && jsonObject.get("news_sources") != null) {
                             JSONArray newsSourceArray = jsonObject.getJSONArray("news_sources");
                             for(int i = 0; i < newsSourceArray.length(); ++i) {
@@ -120,6 +142,7 @@ public class SearchFragment extends Fragment {
                                 dataArray.add(newsSource);
                             }
                         }
+                        // Update the searchList with the results
                         ListView searchList = (ListView) rootView.findViewById(R.id.search_list);
                         searchList.invalidateViews();
                         searchList.setAdapter(new CaughtUpTileAdapter(dataArray, getActivity()));
