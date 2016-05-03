@@ -138,7 +138,6 @@ public class HomeActivity extends AppCompatActivity {
         //region search icon
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search_icon));
         final LinearLayout searchContextBar = (LinearLayout) findViewById(R.id.home_search_context_bar);
-        final FrameLayout container = (FrameLayout) findViewById(R.id.home_main_container);
 
         // Detect when Search Icon clicked
         searchView.setOnSearchClickListener(new View.OnClickListener() {
@@ -146,7 +145,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 titleTextView.setVisibility(View.GONE);
                 searchContextBar.animate().translationY(searchContextBar.getHeight());
-                container.animate().translationY(searchContextBar.getHeight());
             }
         });
 
@@ -156,7 +154,6 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onClose() {
                 titleTextView.setVisibility(View.VISIBLE);
                 searchContextBar.animate().translationY(0);
-                container.animate().translationY(0);
                 return false;
             }
         });
@@ -167,7 +164,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Clear query so as not to log both KEY_UP and KEY_DOWN events (would trigger this listener twice)
-                searchView.setIconified(true);
+                searchView.setIconified(true); // First call to clera query
+                searchView.setIconified(true); // Second call to actually close search
 
                 String currentFragmentName = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
                 if (!currentFragmentName.equals("search")) {

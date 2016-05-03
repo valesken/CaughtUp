@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -180,15 +181,15 @@ public class PublicProfileFragment extends Fragment {
         ImageView profilePic = new ImageView(context);
         new ImageManager(profilePic, getActivity(), follower.getProfileImageURL());
 
-        followerLayout.addView(profilePic,
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        followerLayout.addView(profilePic, new ViewGroup.LayoutParams(200, 200));
 
         // Add username to layout
         TextView userName = new TextView(context);
         userName.setTextColor(Color.BLACK);
         userName.setText(follower.getName());
+        userName.setGravity(Gravity.CENTER_HORIZONTAL);
         followerLayout.addView(userName,
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         // Add onTouchListener that launches public profile of follower
         followerLayout.setOnTouchListener(new View.OnTouchListener() {
