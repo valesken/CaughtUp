@@ -7,7 +7,9 @@ import org.json.JSONObject;
 
 import news.caughtup.caughtup.R;
 
-
+/**
+ * The Article class is used to hold information about a single article.
+ */
 public class Article implements ICaughtUpItem {
     private int articleId;
     private int resourceId;
@@ -17,6 +19,11 @@ public class Article implements ICaughtUpItem {
     private String summary;
     private Uri articleURI;
 
+    /**
+     * Constructor for Artcile.
+     * @param jsonObject
+     * @throws JSONException
+     */
     public Article(JSONObject jsonObject) throws JSONException {
         articleId = jsonObject.getInt("articleId");
         resourceId = jsonObject.getInt("resourceId");
@@ -27,6 +34,9 @@ public class Article implements ICaughtUpItem {
         thumbnailID = (articleURI.toString().contains("www.bbc.")) ? R.mipmap.bbc_icon : R.mipmap.cnn_icon;
     }
 
+    /*
+    Geters and Setters.
+     */
     public int getArticleId() {
         return articleId;
     }

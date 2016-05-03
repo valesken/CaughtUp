@@ -12,18 +12,25 @@ import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.util.Constants;
 import news.caughtup.caughtup.util.StringRetriever;
 
+/**
+ * The main onboarding Activity to display Login/Registration fragments to new users.
+ */
 public class LoginActivity extends AppCompatActivity {
-
     private static FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Initializing Crashlytics for error reporting
         Fabric.with(this, new Crashlytics());
+
+        // Initializing the fragment manager to manage login/register fragments
         fm = getFragmentManager();
         StringRetriever.initializeStringRetriever(getResources(), Constants.IS_LOCAL);
 
+        // Display the login fragment
         LoginFragment loginFragment = new LoginFragment();
         executeTransaction(loginFragment, "login");
     }

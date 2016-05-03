@@ -7,6 +7,9 @@ import com.facebook.share.widget.ShareDialog;
 
 import news.caughtup.caughtup.entities.Article;
 
+/**
+ * FacebookManager takes care of sharing articles to Facebook through a share dialog.
+ */
 public class FacebookManager implements ISocialMediaManager {
     @Override
     public void share(String message, Article article, Activity activity) {
