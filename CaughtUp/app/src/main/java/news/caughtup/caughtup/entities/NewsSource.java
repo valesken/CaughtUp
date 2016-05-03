@@ -7,13 +7,20 @@ import org.json.JSONObject;
 
 import news.caughtup.caughtup.R;
 
+/**
+ * NewsSource holds information about article providers like BBC and CNN.
+ */
 public class NewsSource extends Resource implements ICaughtUpItem {
 
     private String baseUrl;
     private String description;
     private int thumbnailId;
 
-    //region Constructors
+    /**
+     * Constructor of NewsSource.
+     * @param jsonObject
+     * @throws JSONException
+     */
     public NewsSource(JSONObject jsonObject) throws JSONException {
         super(jsonObject.getString("name"));
         setResourceId(jsonObject.getInt("resourceId"));
@@ -21,7 +28,6 @@ public class NewsSource extends Resource implements ICaughtUpItem {
         description = jsonObject.getString("description");
         thumbnailId = (name.toLowerCase().equals("cnn")) ? R.mipmap.cnn_icon : R.mipmap.bbc_icon;
     }
-    //endregion
 
     //region Setters
     public void setBaseUrl(String baseUrl) {

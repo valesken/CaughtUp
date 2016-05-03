@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Main User model to hold all information about a single user.
+ */
 public class User extends Resource implements ICaughtUpItem {
 
     //region Private instance variables

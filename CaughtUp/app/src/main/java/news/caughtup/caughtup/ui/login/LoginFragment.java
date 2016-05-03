@@ -20,8 +20,10 @@ import news.caughtup.caughtup.ui.prime.HomeActivity;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
+/**
+ * The Login fragment which allows a new user to go to Register or log in if already a member.
+ */
 public class LoginFragment extends Fragment {
-
     private View view;
 
     @Override
@@ -52,6 +54,9 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Login button method to initiate a login.
+     */
     public void loginButtonClicked() {
         // Get userName and Password
         final EditText userName = (EditText) view.findViewById(R.id.login_username_edit_text);
@@ -74,13 +79,19 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Returns a login callback to handle a login HTTP response.
+     * @return
+     */
     public Callback getLoginCallback() {
         return new Callback() {
             @Override
             public void process(ResponseObject responseObject) {
                 if (responseObject.getResponseCode() == 200) {
+                    // Login successful!
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
+                        // Direct the user to the home page
                         String responseUserName = jsonObject.getString("username");
                         if(responseUserName != null && !responseUserName.isEmpty()) {
                             Intent intent = new Intent(getActivity(), HomeActivity.class);
@@ -94,6 +105,7 @@ public class LoginFragment extends Fragment {
                         Log.e("NullPointerException", "No JSON Object in response");
                     }
                 } else {
+                    //Login failed...
                     Toast.makeText(getActivity().getApplicationContext(),
                             getResources().getString(R.string.login_server_error),
                             Toast.LENGTH_LONG).show();
@@ -102,6 +114,12 @@ public class LoginFragment extends Fragment {
         };
     }
 
+    /**
+     * Makes the HTTP request for login to the backend.
+     * @param username
+     * @param password
+     * @param callback
+     */
     public void makeLoginCall(String username, String password, Callback callback) {
         RestProxy proxy = RestProxy.getProxy();
         JSONObject jsonObject = new JSONObject();

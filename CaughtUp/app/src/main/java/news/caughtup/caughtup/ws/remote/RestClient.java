@@ -18,7 +18,13 @@ import java.nio.charset.Charset;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.util.StringRetriever;
 
+/**
+ * An implementation of the IRest interface to communicate with the server through RESTful endpoints.
+ */
 public class RestClient implements IRest {
+    /*
+    Begin REST call wrappers.
+     */
     @Override
     public void getCall(String endPoint, String jsonData, Callback callback) {
         new RequestTask(callback).execute(endPoint, jsonData, "GET");
@@ -38,19 +44,35 @@ public class RestClient implements IRest {
     public void deleteCall(String endPoint, String jsonData, Callback callback) {
         new RequestTask(callback).execute(endPoint, jsonData, "DELETE");
     }
+    /*
+    End REST call wrappers.
+     */
 
+    /**
+     * Request task extends AsyncTask perform HTTP requests asynchronously.
+     */
     private class RequestTask extends AsyncTask<String, Void, ResponseObject> {
         private Callback callback;
 
+        /**
+         * Constructor.
+         * @param callback
+         */
         public RequestTask(Callback callback) {
             this.callback = callback;
         }
 
+        /**
+         * Make HTTP call in the background.
+         * @param params
+         * @return
+         */
         @Override
         protected ResponseObject doInBackground(String... params) {
             String server_url = StringRetriever.getInstance().getServerConnectionString();
             HttpURLConnection urlConnection = null;
             try {
+                // Prepare request
                 URL url = new URL(server_url + params[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 switch (params[2]) {
@@ -93,6 +115,10 @@ public class RestClient implements IRest {
             return null;
         }
 
+        /**
+         * Run callback after request completion.
+         * @param o
+         */
         @Override
         protected void onPostExecute(ResponseObject o) {
             // Will be null if the server is down or ip address is out of date
@@ -101,6 +127,11 @@ public class RestClient implements IRest {
             }
         }
 
+        /**
+         * Receive the response from the backend.
+         * @param in
+         * @return
+         */
         private JSONObject readStream(BufferedReader in) {
             StringBuilder sb = new StringBuilder();
             try {
@@ -118,6 +149,11 @@ public class RestClient implements IRest {
             return null;
         }
 
+        /**
+         * Write to the output stream of the connection.
+         * @param out
+         * @param jsonData
+         */
         private void writeStream(OutputStream out, String jsonData) {
             try {
                 out.write(jsonData.getBytes(Charset.forName("UTF-8")));
