@@ -1,6 +1,6 @@
 package news.caughtup.caughtup.exception;
 
 public interface ICaughtUpClientException {
-    void fix(int exceptionID);
-    void log();
+    void fix(Object objectToFix);
+    void log(String message);
 }

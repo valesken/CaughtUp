@@ -24,6 +24,9 @@ import news.caughtup.caughtup.entities.NewsSource;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
 import news.caughtup.caughtup.entities.Users;
+import news.caughtup.caughtup.exception.CaughtUpExceptionFactory;
+import news.caughtup.caughtup.exception.CaughtUpExceptionFactory.ExceptionType;
+import news.caughtup.caughtup.exception.SearchException;
 import news.caughtup.caughtup.util.StringRetriever;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
@@ -33,6 +36,7 @@ public class SearchFragment extends Fragment {
     private View rootView;
     private StringRetriever retriever;
     private List<ICaughtUpItem> dataArray = new ArrayList<>();
+    private String query;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,12 +49,23 @@ public class SearchFragment extends Fragment {
         return rootView;
     }
 
+    public String getQuery() {
+        return query;
+    }
+
     public void makeQuery(String query) {
-        TextView searchContextView = HomeActivity.getCurrentSearchContext();
-        String searchContext = searchContextView.getText().toString().replace(" ", "_");
-        Callback callback = getSearchCallback();
-        makeSearchCall(callback, query, searchContext);
-        setResultsString(query);
+        this.query = query;
+        if(query.split(" ").length > 1) {
+            CaughtUpExceptionFactory factory = new CaughtUpExceptionFactory();
+            SearchException exception = (SearchException) factory.getException(ExceptionType.Search);
+            exception.fix(this);
+        } else {
+            TextView searchContextView = HomeActivity.getCurrentSearchContext();
+            String searchContext = searchContextView.getText().toString().replace(" ", "_");
+            Callback callback = getSearchCallback();
+            makeSearchCall(callback, query, searchContext);
+            setResultsString(query);
+        }
     }
 
     private void makeSearchCall(Callback callback, String query, String searchContext) {
