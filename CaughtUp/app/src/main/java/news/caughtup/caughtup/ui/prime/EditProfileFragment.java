@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,6 +36,10 @@ import io.fabric.sdk.android.services.network.HttpRequest;
 import news.caughtup.caughtup.R;
 import news.caughtup.caughtup.entities.ResponseObject;
 import news.caughtup.caughtup.entities.User;
+import news.caughtup.caughtup.exception.CaughtUpExceptionFactory;
+import news.caughtup.caughtup.exception.CaughtUpExceptionFactory.ExceptionType;
+import news.caughtup.caughtup.exception.EditProfileException;
+import news.caughtup.caughtup.exception.ICaughtUpClientException;
 import news.caughtup.caughtup.util.ImageManager;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
@@ -211,6 +216,11 @@ public class EditProfileFragment extends Fragment {
         }
 
         // Age
+        if(ageView.getText().toString().isEmpty()) {
+            CaughtUpExceptionFactory factory = new CaughtUpExceptionFactory();
+            EditProfileException exception = (EditProfileException) factory.getException(ExceptionType.EditProfile);
+            exception.fix(ageView);
+        }
         int age = Integer.parseInt(ageView.getText().toString());
         if (age > 1) {
             user.setAge(age);
@@ -251,8 +261,13 @@ public class EditProfileFragment extends Fragment {
             }
 
             // Age
+            if(ageView.getText().toString().isEmpty()) {
+                CaughtUpExceptionFactory factory = new CaughtUpExceptionFactory();
+                EditProfileException exception = (EditProfileException) factory.getException(ExceptionType.EditProfile);
+                exception.fix(ageView);
+            }
             int age = Integer.parseInt(ageView.getText().toString());
-            if (age > 1) {
+            if (age > 0) {
                 jsonObject.put("age", age);
             }
 
