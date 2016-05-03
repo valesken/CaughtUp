@@ -21,8 +21,10 @@ import news.caughtup.caughtup.ui.prime.HomeActivity;
 import news.caughtup.caughtup.ws.remote.Callback;
 import news.caughtup.caughtup.ws.remote.RestProxy;
 
+/**
+ * The registration fragment to register new users.
+ */
 public class RegisterFragment extends Fragment {
-
     private View view;
 
     @Override
@@ -42,22 +44,32 @@ public class RegisterFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Register button callback to check for validity of inputs and initiate the registration call.
+     */
     public void registerButtonClicked() {
         RegistrationUser newUser = getRegistrationUser();
         if(!newUser.confirmName()) {
+            // username can't be empy
             Toast.makeText(getActivity().getApplicationContext(),
                     getResources().getString(R.string.empty_user_name),
                     Toast.LENGTH_LONG).show();
         } else if(!newUser.confirmPassword()) {
+            // Password and confirmation must match
             Toast.makeText(getActivity().getApplicationContext(),
                     getResources().getString(R.string.register_password_error),
                     Toast.LENGTH_LONG).show();
         } else {
+            // Make the registration call to the backend
             Callback callback = getRegisterCallback();
             makeRegisterCall(newUser, callback);
         }
     }
 
+    /**
+     * Create a registration object to use for sending registration data to the backend.
+     * @return
+     */
     public RegistrationUser getRegistrationUser() {
         // Get layout components
         EditText userName = (EditText) view.findViewById(R.id.register_username_edit_text);
@@ -74,11 +86,16 @@ public class RegisterFragment extends Fragment {
         return user;
     }
 
+    /**
+     * Registration callback to handle the HTTP response from the backend
+     * @return
+     */
     public Callback getRegisterCallback() {
         return new Callback() {
             @Override
             public void process(ResponseObject responseObject) {
                 if (responseObject.getResponseCode() == 200) {
+                    //Registration was successful!
                     JSONObject jsonObject = responseObject.getJsonObject();
                     try {
                         String responseUserName = jsonObject.getString("username");
@@ -94,6 +111,7 @@ public class RegisterFragment extends Fragment {
                         Log.e("NullPointerException", "No JSON Object in response");
                     }
                 } else {
+                    // Registration failed...
                     Toast.makeText(getActivity().getApplicationContext(),
                             getResources().getString(R.string.register_server_error),
                             Toast.LENGTH_LONG).show();
@@ -102,6 +120,11 @@ public class RegisterFragment extends Fragment {
         };
     }
 
+    /**
+     * Make the registration HTTP call to the backend.
+     * @param user
+     * @param callback
+     */
     public void makeRegisterCall(RegistrationUser user, Callback callback) {
         RestProxy proxy = RestProxy.getProxy();
         try {
